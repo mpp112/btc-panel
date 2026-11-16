@@ -100,14 +100,21 @@
   .fngbar{height:10px;border-radius:99px;background:linear-gradient(to right,#c93a3a 0 24%,#d97a06 25% 44%,#b8ad97 45% 55%,#5da271 56% 75%,#178a52 76% 100%);position:relative;margin:10px 0 4px}
   @media (prefers-color-scheme: dark){.fngbar{background:linear-gradient(to right,#e26060 0 24%,#f09a26 25% 44%,#8a7f68 45% 55%,#4d9a6c 56% 75%,#3cb87c 76% 100%)}}
   .fngbar i{position:absolute;top:-4px;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--text);transform:translateX(-50%)}
+  details.srcbox{border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-top:8px;background:var(--surface);font-size:12.5px}
+  details.srcbox summary{cursor:pointer;font-weight:600;min-height:32px}
+  details.srcbox p{margin:4px 0}
+  .fact{font-size:11px;border:1px solid var(--up);color:var(--up);border-radius:99px;padding:0 7px}
+  .maybe{font-size:11px;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:0 7px}
+  .insuff{font-size:11px;border:1px solid var(--dim);color:var(--dim);border-radius:99px;padding:0 7px}
 </style>
 </head>
 <body>
 
 <header class="banner">
   <div class="wrap">
-    <h1>BTC 每日观察 · 分享版<span class="tag">静态只读快照</span></h1>
-    <p>快照时间：<b class="num">2026-11-16 12:10（北京时间）</b> · 观察日 2026-11-16（北京时间 08:00 切日）。
+    <h1>BTC 每日观察 · 分享版<span class="tag">静态快照 · 非实时行情</span></h1>
+    <p>版本：<b>分享版 v2（2026-11-16 修订）</b> · 公开链接：https://mpp112.github.io/btc-panel/<br>
+    快照生成时间：<b class="num">2026-11-16 12:10（北京时间）</b><span id="snapshot-age"></span> · 观察日 2026-11-16（北京时间 08:00 切日）。
     本页是原 BTC 面板在这一刻的完整数据快照，可固定放在 GitHub Pages 上用外部网址打开；
     它<b>不会自动更新、不能保存任何记录</b>——定投账本、事件快照、每日复盘都只在原面板里。原面板有新数据时，需要重新生成一次本页。</p>
   </div>
@@ -120,7 +127,7 @@
     <button role="tab" aria-selected="false" data-tab="plans">行动计划</button>
     <button role="tab" aria-selected="false" data-tab="liquidity">全球流动性</button>
     <button role="tab" aria-selected="false" data-tab="events">事件与历史案例</button>
-    <button role="tab" aria-selected="false" data-tab="review">复盘与部署</button>
+    <button role="tab" aria-selected="false" data-tab="review">复盘与帮助</button>
   </div>
 </nav>
 
@@ -134,17 +141,42 @@
     <div class="num" style="font-size:14px"><span class="down">−13.9% <span style="font-size:12px;color:var(--dim)">7日</span></span></div>
     <div class="num" style="font-size:14px"><span class="down">−20.3% <span style="font-size:12px;color:var(--dim)">30日</span></span></div>
   </div>
-  <p class="sub num" style="margin-top:6px">Kraken 现货 · 24h 高 $66,087 · 低 $63,731 · 振幅 3.7% · 24h 成交量 2,829 BTC · 30 日波动率（日收益标准差）2.25%</p>
+  <p class="sub num" style="margin-top:6px">Kraken 现货（快照时刻）· 24h 高 $66,087 · 低 $63,731 · 振幅 3.7% · 24h 成交量 2,829 BTC · 30 日波动率（日收益标准差）2.25%</p>
+  <div class="grid c3" style="margin-top:10px">
+    <div class="stat"><label>现价（快照时刻，未收盘）</label><div class="v num">$64,812</div><div class="f">只用于显示当前报价，不用于均线“收盘跌破”判断</div></div>
+    <div class="stat"><label>最近已完成日收盘</label><div class="v num">$64,824</div><div class="f">Kraken 日线最后一根已完成 K 线收盘；与 200 日均线比较用此价。未完成 K 线不参与日线计算</div></div>
+    <div class="stat"><label>最近已完成周收盘</label><div class="v num">见长期页说明</div><div class="f">与 200 周均线比较只用已完成周收盘；本快照未单独归档周收盘数值，<b>证据不足时不下“周收盘已跌破”结论</b></div></div>
+  </div>
+  <details class="srcbox"><summary>来源与计算 · 价格</summary>
+    <p>原始来源：Kraken 现货 BTC/USD（<a href="https://www.kraken.com" target="_blank" rel="noreferrer">kraken.com</a> 行情接口）。数据所属时间：快照时刻 2026-11-16 12:10（北京时间）；抓取时间同快照时间。原始单位：USD/BTC。公式：24h / 7 日 / 30 日涨跌 = 现价 ÷ 对应时点价格 − 1。来源状态：正常。缺失处理：缺失不补零、不沿用旧值参与今日异常判断。</p>
+  </details>
 
   <div class="grid c4" style="margin-top:14px">
     <div class="stat"><label>ETF 净流 · 11-13（美东交易日）</label><div class="v num down">−$185.4M</div><div class="f num">5 日累计 −$1,065.3M · 20 日累计 −$2,248.2M（Farside）</div></div>
     <div class="stat"><label>稳定币 7 日净变化</label><div class="v num down">−$2.75B</div><div class="f num">USDT −0.87% · USDC −1.72%（7 日，DefiLlama）</div></div>
-    <div class="stat"><label>未平仓量 OI · OKX BTC 永续</label><div class="v num">$2.12B</div><div class="f num">≈ 32,660 BTC · 3,265,987 张（1 张 = 0.01 BTC）· 单一交易所口径，非全市场</div></div>
-    <div class="stat"><label>资金费率（预测）/ 8h · OKX</label><div class="v num">−0.0035%</div><div class="f num">已结算 −0.0013% · 周期 8h（按合约实际结算时间）· 年化约 −3.9%</div></div>
+    <div class="stat"><label>未平仓量 OI · OKX BTC 永续（单一交易所）</label><div class="v num">32,660 BTC</div><div class="f num">美元名义 ≈ $2.12B · 3,265,987 张（1 张 = 0.01 BTC）。判断仓位变化以 BTC 数量口径为准，美元值会随价格机械变化</div></div>
+    <div class="stat"><label>资金费率（预测）/ 8h · OKX</label><div class="v num">−0.0035%</div><div class="f num">已结算 −0.0013% · 周期 8h · 年化约 −3.9%。与 OI 分开看，不合并成单一“杠杆”结论</div></div>
+  </div>
+  <details class="srcbox"><summary>来源与计算 · OI 与资金费率（OKX 单一交易所）</summary>
+    <p>原始来源：OKX BTC-USDT 永续合约公开接口（合约代码 BTC-USDT-SWAP）。数据所属 / 抓取时间：快照时刻。原始单位：张（1 张 = 0.01 BTC）、BTC、USD；费率为每 8 小时比例。公式：BTC 口径 OI = 张数 × 0.01；年化费率 ≈ 费率 × 3 × 365。</p>
+    <p><b>结论限制（重要）：</b>本快照只有 OKX 一家交易所的 OI 绝对值，没有全市场 OI、没有多交易所汇总，也没有足够长的 BTC 口径 OI 历史序列计算历史分位（窗口与样本数不足）。因此<b>不能</b>据此判断“全市场杠杆不高”或“没有多头清算风险”。OI 变化方向与资金费率方向若冲突（例如 OI 上升但费率为负），分别呈现、不强行合并解释。OI 历史分位：<span class="insuff">证据不足</span>——待原面板积累足够 BTC 口径历史后再补，数据不足不伪装成完整一年。</p>
+  </details>
+
+  <h2 class="sec">今日三个关键变化</h2>
+  <p class="sub">每项分开标注：已确认事实 / 可能解释 / 证据不足，并给出反向信息与下一步观察条件。ETF、稳定币、情绪三类证据分开呈现，不互相替代。</p>
+  <div class="grid" style="grid-template-columns:1fr;gap:12px">
+    <div class="card"><h3>1 · ETF 需求仍在净流出 <span class="fact">已确认事实</span></h3>
+      <p style="margin:0;font-size:13.5px">证据：11-13 净流出 −$185.4M，5 日累计 −$1,065.3M，20 日累计 −$2,248.2M（Farside 逐基金加总与公布总额一致，见流动性页核对）。<br>反向信息：单日流出额较前期部分交易日收窄，但 5 日与 20 日累计仍为负，不能据此说需求已回转。<br>下一步观察条件：5 日累计转正，或连续两个交易日净流入且合计超过近 5 日日均流出，再重新评估。</p></div>
+    <div class="card"><h3>2 · 稳定币供应继续收缩 <span class="fact">已确认事实</span></h3>
+      <p style="margin:0;font-size:13.5px">证据：USDT + USDC 合计 7 日净变化 −$2.75B、30 日约 −$11.56B（同口径端点相减，见核验案例）。这里的“净变化”是流通供应（美元估值口径）的净变化，不是发行 / 赎回明细——本页没有取得逐笔发行与赎回数据，不伪称净发行。<br>反向信息：两币种价格均在 1 美元附近（$0.9992 / $0.9998），未触发脱锚提示，收缩更像需求走弱而非脱锚挤兑——此为<span class="maybe">可能解释</span>，非已证实因果。<br>下一步观察条件：7 日净变化转正且 30 日跌幅收窄，才算边际改善。</p></div>
+    <div class="card"><h3>3 · 情绪极度恐惧，但不算独立资金证据 <span class="maybe">情绪指标</span></h3>
+      <p style="margin:0;font-size:13.5px">证据：恐惧与贪婪指数 10，连 4 天极度恐惧。它归入<b>情绪</b>，构成与价格、波动率高度重叠，<b>不计作独立的需求 / 资金证据</b>，不与 ETF、稳定币重复计票。<br>反向信息：极端恐惧历史上既出现在继续下跌阶段，也出现在阶段底部附近，单凭读数不能推断方向。<br>下一步观察条件：看情绪是否与 ETF / 稳定币出现分歧（如恐惧加深但资金转正），分歧比同向更值得记录。</p></div>
   </div>
 
   <h2 class="sec">市场情绪 · 恐惧与贪婪指数</h2>
-  <p class="sub">辅助指标，不是独立证据：官方构成含波动率 25%、动量与成交量 25%、社交媒体 15%、BTC 市占率 10%、搜索趋势 10%，调查部分（15%）目前暂停。它与价格、波动率高度重叠，不能与价格下跌算作两份证据。</p>
+  <details class="srcbox" style="margin-bottom:10px"><summary>指数构成、方法与长说明（默认折叠，点击展开）</summary>
+    <p>辅助指标，不是独立证据：官方构成含波动率 25%、动量与成交量 25%、社交媒体 15%、BTC 市占率 10%、搜索趋势 10%，调查部分（15%）目前暂停。它与价格、波动率高度重叠，不能与价格下跌算作两份证据。来源：Alternative.me，每日发布；原始单位为 0–100 指数点。本页只把它归入“情绪”一类。</p>
+  </details>
   <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:4px 16px">
     <div class="num" style="font-size:40px;font-weight:800;line-height:1;color:var(--down)">10</div>
     <div style="font-size:16px;font-weight:700">极度恐惧 <span style="font-size:12px;font-weight:400;color:var(--dim)">Extreme Fear · 2026-11-16</span></div>
@@ -156,23 +188,34 @@
   <h2 class="sec">价格 · 近 180 日</h2>
   <div class="chartbox"><p>Kraken 日线收盘（2026-05-21 至 2026-11-16）· 虚线为 200 日均线 $72,865</p><div id="chart-price"></div></div>
 
+  <h2 class="sec">价格 · OI · 资金费率（上下对齐，共享时间轴）</h2>
+  <div class="chartbox"><p>上：BTC 日收盘（本页已归档 180 日）。下：OI（BTC 口径）与资金费率——本快照只有快照时刻一个观测点（OI 32,660 BTC、预测费率 −0.0035%/8h），<b>历史序列不足，不绘制伪造曲线</b>；待原面板按日归档后再补齐对齐图。图表不人为平移数据制造领先关系。点击上方价格图可读当日收盘读数。</p><div id="chart-oi-note" class="num" style="font-size:13px">快照点 · OI 32,660 BTC · 资金费率（预测）−0.0035%/8h · 历史分位：证据不足（样本不足一年）</div></div>
+
+  <h2 class="sec">稳定币流通量与净变化（同口径端点）</h2>
+  <div class="chartbox"><p>USDT、USDC 及合计：用页面已公布的当前流通量与 7 日 / 30 日涨跌幅反推同口径端点（近似值，百分比经四舍五入，端点误差约 ±0.1B）。点击柱形可读数。</p><div id="chart-stable"></div>
+  <p class="num" style="font-size:12.5px;margin-top:6px">端点（$B）：USDT 30 日前 ≈183.5 → 7 日前 ≈176.9 → 现在 175.33；USDC 30 日前 ≈72.7 → 7 日前 ≈70.5 → 现在 69.33；合计 7 日净变化 −$2.75B、30 日约 −$11.56B。此为供应净变化，不等于发行减赎回明细。</p></div>
+
   <h2 class="sec">ETF 每日净流 · 近 30 个交易日</h2>
   <div class="chartbox"><p>美国现货 BTC ETF 合计净流入（$M，Farside）· 最近交易日 2026-11-13：−185.4</p><div id="chart-etf"></div></div>
   <p class="sub" style="margin-top:8px">11 月以来 ETF 持续净流出：近 5 个交易日每天都是负值，20 日累计 −$2.25B。这是本轮下跌中需求侧最明确的证据，与稳定币流通量收缩（30 日 −$11.6B）方向一致。</p>
 
-  <h2 class="sec">跨资产表现</h2>
+  <h2 class="sec">跨资产表现（同起点比较）</h2>
+  <p class="sub">规则：BTC、纳指、黄金必须用<b>相同起止时间</b>比较收益，不用 BTC 的 30 日跌幅与其他资产的单日跌幅作对比或归因。纳指与黄金有交易时段与休市，BTC 为 7×24 交易；对齐时以共同交易日收盘为准，休市日沿用上一交易日收盘并标注，不人为平移时间轴。</p>
   <div class="grid c4">
-    <div class="stat"><label>纳斯达克综合</label><div class="v num">$25,136</div><div class="f num down">最近交易日 −0.91%（Yahoo）</div></div>
-    <div class="stat"><label>黄金期货</label><div class="v num">$3,878</div><div class="f num down">最近交易日 −0.21%（Yahoo）</div></div>
-    <div class="stat"><label>BTC 30 日表现</label><div class="v num down">−20.3%</div><div class="f">同期明显弱于纳指与黄金，属自身需求走弱而非单纯宏观拖累</div></div>
-    <div class="stat"><label>30 日波动率</label><div class="v num">2.25%</div><div class="f">日收益标准差；下跌伴随波动抬升，与情绪指数下行是同一件事的不同表述</div></div>
+    <div class="stat"><label>纳斯达克综合（水平）</label><div class="v num">$25,136</div><div class="f num">最近交易日单日 −0.91%（Yahoo）——仅为水平与单日读数，<b>不与 BTC 30 日涨跌幅直接比较</b></div></div>
+    <div class="stat"><label>黄金期货（水平）</label><div class="v num">$3,878</div><div class="f num">最近交易日单日 −0.21%（Yahoo）——同上，不作跨周期归因</div></div>
+    <div class="stat"><label>同起点归一化表现图</label><div class="v" style="font-size:15px">数据受限</div><div class="f">本快照只归档了 BTC 日线，未同步归档纳指 / 黄金同区间日线，<b>无法诚实绘制同起点归一化曲线</b>。原面板补齐三资产同区间序列后再上图；在此之前删除“BTC 同期明显弱于纳指与黄金、属自身需求走弱”的归因结论</div></div>
+    <div class="stat"><label>30 日波动率（BTC）</label><div class="v num">2.25%</div><div class="f">日收益标准差；下跌伴随波动抬升，与情绪指数下行是同一件事的不同表述，不重复计为两份证据</div></div>
   </div>
+  <details class="srcbox"><summary>来源与计算 · 跨资产</summary>
+    <p>原始来源：Yahoo Finance（纳斯达克综合、黄金期货）。数据所属时间：各自最近交易日；抓取时间：快照时刻。缺失处理：休市无新值时标“最近交易日”，不把旧值当今日变化；旧数据不参与今日异常或新增行动信号。</p>
+  </details>
 
   <h2 class="sec">今日要点</h2>
   <ul class="tight">
-    <li><b>价格在两条长期均线下方：</b>现价 $64,812 低于 200 日均线 $72,865 与 200 周均线 $68,366，距历史高点 $126,198 回撤 −48.6%。</li>
+    <li><b>价格与长期均线（口径分开）：</b>现价 $64,812、最近已完成日收盘 $64,824 均低于 200 日均线 $72,865；200 周均线 $68,366 只与已完成周收盘比较，本快照未单独归档周收盘数值，不混称“收盘已跌破”。距历史高点 $126,198 回撤 −48.6%（以现价计）。</li>
     <li><b>需求侧三项同向走弱：</b>ETF 20 日累计净流出 $2.25B、稳定币 7 日净减 $2.75B、情绪降至 10（极度恐惧，连 4 天）。</li>
-    <li><b>杠杆不高：</b>OKX 资金费率预测 −0.0035%/8h（空头略占优但幅度很小），OI $2.12B；没有多头拥挤需要被清算的迹象，下跌更像现货需求撤退而非杠杆踩踏。</li>
+    <li><b>杠杆：证据不足，不下结论。</b><span class="insuff">证据不足</span> OKX 单一交易所资金费率（预测）−0.0035%/8h 为小幅负值、OI 为 32,660 BTC（BTC 口径），仅说明 OKX 这一家此刻费率为负；没有全市场 OI 与历史分位，不能判断“全市场杠杆不高”，也不能排除多头清算风险。“下跌更像现货需求撤退”仅为与 ETF / 稳定币走弱相一致的<span class="maybe">可能解释</span>，不是已确认事实。</li>
     <li><b>接下来 72 小时事件密集：</b>美联储主席讲话、美国零售销售、FOMC 会议纪要依次落地（见「事件」页），事前判断与失效条件请在原面板里记录。</li>
   </ul>
   <p class="src">数据来源：Kraken（价格）· OKX（OI / 资金费率）· Farside（ETF）· DefiLlama（稳定币）· FRED（宏观）· Yahoo（跨资产）· Alternative.me（情绪）· BIS（全球流动性）</p>
@@ -184,8 +227,8 @@
   <p class="sub">周线收盘与 200 周均线；回撤以 Kraken 历史最高价为基准。</p>
   <div class="grid c4">
     <div class="stat"><label>当前价格</label><div class="v num">$64,812</div><div class="f">快照时刻 Kraken 现货</div></div>
-    <div class="stat"><label>200 日均线</label><div class="v num">$72,865</div><div class="f">日收盘在其下方（−11.1%）</div></div>
-    <div class="stat"><label>200 周均线</label><div class="v num">$68,366</div><div class="f">周收盘在其下方（−5.2%）· 长期趋势基准</div></div>
+    <div class="stat"><label>200 日均线</label><div class="v num">$72,865</div><div class="f">最近已完成<b>日收盘</b> $64,824 在其下方（−11.0%，以日收盘对日均线）。均线由已完成日线计算，未完成 K 线已排除</div></div>
+    <div class="stat"><label>200 周均线</label><div class="v num">$68,366</div><div class="f">只与已完成<b>周收盘</b>比较；本快照未单独归档周收盘数值，此处不给出“周收盘在其下方”的百分比结论 · 长期趋势基准</div></div>
     <div class="stat"><label>距历史高点回撤</label><div class="v num down">−48.6%</div><div class="f num">高点 $126,198</div></div>
   </div>
   <div class="note" style="margin-top:16px">链上估值（MVRV、已实现价格、SOPR 等）属于第二阶段指标，原面板第一版未接入，分享版同样不估算。</div>
@@ -200,31 +243,38 @@
 
   <h2 class="sec">怎么读这个位置</h2>
   <ul class="tight">
-    <li>价格同时跌破 200 日与 200 周均线，按原面板的定义属于长期趋势转弱区，而不是「均线附近震荡」。</li>
-    <li>距高点回撤 −48.6%，已接近历史深回撤区间的中段；回撤幅度本身不构成买入理由，原面板不设任何与极端读数自动绑定的动作。</li>
+    <li>最近已完成日收盘低于 200 日均线，按原面板定义属于日线长期趋势转弱区；周线结论须等已完成周收盘与 200 周均线同口径比较后再下，本页不混用现价代替周收盘。</li>
+    <li>距高点回撤 −48.6%（现价口径）。原“已接近历史深回撤区间中段”的说法已删除：该判断未附样本范围与回撤定义，不能成立。回撤幅度本身不构成买入理由，不设与极端读数自动绑定的动作。</li>
+    <li>长期价格与 200 日 / 200 周均线图：本页价格图（今日页）含 200 日均线虚线；200 周均线需要约 200 周（近 4 年）周线样本，本快照仅归档 180 日日线，<b>样本不足，不绘制 200 周均线图、不伪装成完整长期序列</b>。核心指标历史分位同理：窗口与样本数不足的指标一律标“证据不足”。</li>
     <li>定投是否继续、暂停或调整，依据的是预算、仓位上限与长期逻辑（见「行动计划」页的规则区分），不是价格跌了多少。</li>
   </ul>
 </section>
 
 <!-- ============ 行动计划 ============ -->
 <section class="page" id="page-plans">
+  <h2 class="sec">生成计划前：先检查，后看信号</h2>
+  <div class="note warn"><b>顺序固定：</b>先检查 ①预算 ②仓位上限 ③可用现金 ④已有挂单占用 ⑤数据完整性，五项任一不通过或缺失，就不评估市场信号、<b>不生成具体金额与数量</b>。风险档案只在原面板保存，分享版不显示金额；风险档案未填写或关键数据缺失时，本页只展示规则与条件核对，不生成草稿数字。<b>所有计划只生成草稿与模拟记录，不连接交易所执行订单。</b></div>
+  <div class="note" style="margin-top:10px"><b>验证状态：尚未验证。</b>下文“4 项满足 3 项”、40/30/30 分档、按波动率定挂单距离、止损参数等，全部标为<b>待验证规则</b>——未开展计入费用、滑点、未成交与部分成交的回测，也没有样本外表现，不得暗示已经证明有效。后续若开展验证，须与原基础定投公平比较，且不能把“价格触及限价”视为必然全部成交。</div>
+
   <h2 class="sec">三类计划，严格分开</h2>
   <div class="grid c3">
-    <div class="card"><h3>基础定投</h3><p style="margin:0;font-size:13.5px">按预算、仓位上限与长期逻辑决定执行或暂停，<b>不设价格止损</b>。它是长期仓位的建立方式，不是交易。</p></div>
+    <div class="card"><h3>基础定投</h3><p style="margin:0;font-size:13.5px">按预算、仓位上限与长期逻辑决定执行或暂停，<b>不使用战术仓的机械止损</b>。但必须有：配置上限、资金需求安排、暂停投入的条件，以及长期逻辑失效后的处理政策（停止新增并复盘，而非机械清仓）。它是长期仓位的建立方式，不是交易。</p></div>
     <div class="card"><h3>定投挂单</h3><p style="margin:0;font-size:13.5px">本期固定金额拆成限价档位，必须写明到期日与未成交处理规则（继续等待，还是回归基础定投市价执行）。原面板的档位间距规则为现价下方 1× / 2× / 3× 近 30 日波动率，金额按 40 / 30 / 30 分配——这是间距规则，不是预测的支撑位。</p></div>
-    <div class="card"><h3>战术加仓</h3><p style="margin:0;font-size:13.5px">额外的交易性买入，必须带价格止损、失效条件、最长持有期与退出计划；仓位按「单笔可承受亏损 ÷（入场价 − 止损价 + 每 BTC 成本）」计算。止损距离规则：max（2× 30 日波动率，8%），上限 25%。</p></div>
+    <div class="card"><h3>战术加仓 <span class="maybe">待验证规则</span></h3><p style="margin:0;font-size:13.5px">额外的交易性买入，必须带价格止损、失效条件、最长持有期与退出计划；仓位按「单笔可承受亏损 ÷（入场价 − 止损价 + 每 BTC 成本）」计算。止损须匹配持有期限，并注明<b>盘中触发还是收盘确认</b>。原止损距离参数 max（2× 30 日波动率，8%）、上限 25% 为待验证参数；<b>若合理止损距离超过风险政策上限，应放弃计划或按规则缩小仓位，不能简单把止损距离截断到上限</b>。</p></div>
   </div>
   <p class="sub" style="margin-top:10px">因市场情况临时调整的动作会单独记成新计划，不改动原计划——这样「原计划执行」的对照账户才始终是公平的基准。所有计划在原面板里版本化保存，修订只追加新版本，旧版本不覆盖。</p>
+  <h2 class="sec">每条计划必须写清的字段</h2>
+  <p class="sub">缺一项不生成草稿：适用仓位（基础 / 定投挂单 / 战术）· 动作 · 预算 · 价格计算方式 · 数据依据 · 反向证据 · 成立假设 · 失效条件 · 有效期 · 未成交处理 · 退出规则 · 费用与滑点假设。</p>
 
   <h2 class="sec">战术加仓触发条件 · 本快照核对</h2>
-  <p class="sub">原面板规则：以下 4 个可观测条件至少满足 3 个，才生成战术加仓草稿；否则结论为「证据不足」，不生成。用本快照数据逐项核对：</p>
+  <p class="sub">原面板规则 <span class="maybe">待验证规则 · 尚未验证</span>：以下 4 个可观测条件至少满足 3 个，才生成战术加仓草稿；否则结论为「证据不足」，不生成。用本快照数据逐项核对：</p>
   <div class="card" style="padding:6px 14px">
     <div class="cond"><div class="mark up">✓</div><div><b>恐惧与贪婪指数 ≤ 24</b><br><span class="num" style="font-size:13px;color:var(--dim)">当前 10（极度恐惧）——满足</span></div></div>
     <div class="cond"><div class="mark down">✗</div><div><b>ETF 5 日累计净流入 &gt; 0</b><br><span class="num" style="font-size:13px;color:var(--dim)">当前 5 日累计 −$1,065.3M——不满足</span></div></div>
     <div class="cond"><div class="mark down">✗</div><div><b>稳定币 7 日净变化 &gt; 0</b><br><span class="num" style="font-size:13px;color:var(--dim)">当前 −$2.75B——不满足</span></div></div>
-    <div class="cond"><div class="mark up">✓</div><div><b>杠杆降温：OI 7 日 ≤ 0 或资金费率 ≤ 0.01%/期</b><br><span class="num" style="font-size:13px;color:var(--dim)">资金费率（预测）−0.0035%/8h ≤ 0.01%——满足</span></div></div>
+    <div class="cond"><div class="mark" style="color:var(--dim)">?</div><div><b>杠杆变化：OI 变化与资金费率分开看 <span class="maybe">待验证规则</span></b><br><span style="font-size:13px;color:var(--dim)">原“资金费率 ≤ 0.01% 即杠杆降温”的单一条款已废止：单一费率阈值不能定义杠杆降温。当前只有 OKX 快照费率 −0.0035%/8h，没有 BTC 口径 OI 的 7 日变化序列，两者无法互相验证——本项标<b>证据不足</b>，不计为满足，也不新增未经验证的替代阈值。</span></div></div>
   </div>
-  <div class="note warn" style="margin-top:12px"><b>结论：2 / 4，证据不足，不生成战术加仓草稿。</b>情绪极端与杠杆降温成立，但资金侧（ETF、稳定币）仍在净流出——按规则，抄底叙事缺资金确认。风险档案（月预算、仓位上限、单笔可承受亏损等）只保存在原面板，分享版不显示任何金额与仓位数字。</div>
+  <div class="note warn" style="margin-top:12px"><b>结论：1 项满足（情绪）、2 项不满足（ETF、稳定币）、1 项证据不足（杠杆），不生成战术加仓草稿。</b>说明：情绪读数只作背景、不作独立资金证据；资金侧仍在净流出。原“2/4”计数把单一费率阈值算作满足，已按新口径修正。风险档案只保存在原面板，分享版不显示任何金额与仓位数字。</div>
 </section>
 
 <!-- ============ 全球流动性 ============ -->
@@ -277,6 +327,10 @@
     </div>
   </div>
   <p class="sub" style="margin-top:10px">读法：全球信用存量仍在扩张（两项同比均为正），但这是季度、滞后约一季的慢变量——它说明背景不紧，不说明当下边际在改善。边际看美国利率、利差与上面的资金流模块。</p>
+  <div class="note"><b>口径提醒：</b>信用存量同比增长<b>不能</b>直接解释为融资条件宽松。存量增长可能来自旧贷款未到期、汇率估值或统计覆盖变化；判断融资条件松紧还须结合利率水平与信用利差（如本页高收益债利差 3.20%）一起看。本页宏观存量旁尽量给出较上期变化（如美联储总资产周变化 +$10.7B、准备金 +$30.5B、TGA −$42.8B）；没有可靠上期值的序列只展示水平与所属期，不编造变化。</div>
+  <details class="srcbox"><summary>来源与计算 · BIS 与宏观存量</summary>
+    <p>BIS 序列代码与官方链接见各卡片来源行；FRED 序列代码见各指标下标（DFF、DGS2、DFII10、DGS10、DTWEXBGS、BAMLH0A0HYM2、WALCL、WRESBAL、WTREGEN、RRPONTSYD）。数据所属时间为各序列真实观测日，抓取时间为快照时刻，发布时间以各发布机构日历为准（本页可取得时标注，未取得标未知）。原始单位：美元 / 本币存量、百分点。美联储净流动性代理 = WALCL − WTREGEN − RRPONTSYD，三项时点不完全一致（见卡片标注），<b>混合时点计算只作背景，不作为精确变化证据</b>。缺失处理：缺失不补零，旧值不参与今日异常判断。</p>
+  </details>
 
   <h2 class="sec">ETF 需求核对</h2>
   <p class="sub">Farside 分基金明细（$M）：逐日核对「分基金加总」与公布的「总净流入」是否一致；未公布的基金保持空值，不按 0 计算。</p>
@@ -284,11 +338,18 @@
   <div class="chips num">
     <span class="chip">IBIT <b class="down">−143.5</b></span>
     <span class="chip">FBTC <b class="down">−41.9</b></span>
-    <span class="chip">其余基金 <b>0.0</b></span>
+    <span class="chip">其余已公布基金 <b>明确为 0.0</b></span>
   </div>
+  <p class="sub">口径：逐基金区分三种状态——有数值、<b>明确为零</b>（已公布且为 0）、<b>尚未公布 / 缺失</b>（保持空值，不按 0 计入加总）。本日已公布基金加总与公布总额差额为 0.0M；若将来出现差额，将在此处明示差额与可能原因（未公布基金、修订），不静默抹平。</p>
+  <details class="srcbox"><summary>来源与计算 · ETF</summary>
+    <p>原始来源：Farside 美国现货 BTC ETF 每日资金流（分基金表）。数据所属时间：美东交易日 2026-11-13；发布时间：美股收盘后数小时；抓取时间：快照时刻。原始单位：百万美元。公式：公布总额核对 = Σ 各已公布基金净流。来源状态：正常。缺失处理：未公布保持空值。</p>
+  </details>
 
   <h2 class="sec">稳定币资金</h2>
   <p class="sub">实际流通量（DefiLlama 官方 totalCirculatingUSD 汇总口径，面板不自行逐链相加，避免桥接映射代币重复计算）。7 日净变化由同口径端点相减得出。价格偏离 1 美元超过 0.3% 视为脱锚提示。</p>
+  <details class="srcbox"><summary>来源与计算 · 稳定币 totalCirculatingUSD 口径核对</summary>
+    <p>核对结论：totalCirculatingUSD 是<b>美元估值口径</b>（流通代币数量 × 价格），因此会受价格变化影响；当价格偏离 1 美元时，美元估值变化 ≠ 代币数量变化。本快照 USDT 价格 $0.9992、USDC $0.9998，偏离均小于 0.1%，估值影响很小，7 日 / 30 日变化可近似看作供应数量变化，但表述统一用“供应净变化（美元估值口径）”，<b>不称净发行</b>。本页只有供应净变化，没有发行与赎回的分别明细，不伪称已取得。原始来源：DefiLlama 稳定币接口；抓取时间：快照时刻；缺失处理：某币种缺失时合计只标已取得部分，不补零凑总数。</p>
+  </details>
   <div class="grid">
     <div class="card"><h3>USDT</h3><div class="num" style="font-size:24px;font-weight:800">$175.33B</div>
       <p class="num" style="margin:4px 0 0;font-size:12.5px;color:var(--dim)">价格 $0.9992 · 1日 +0.01% · 7日 −0.87% · 30日 −4.44% · 7日净变化 −$1.53B</p></div>
@@ -329,6 +390,14 @@
     <p style="margin:6px 0 0;font-size:13.5px">无预期 / 前值（纪要类事件）。关注点：委员们对后续利率路径与缩表的分歧程度；与 FedWatch 隐含预期对照看。</p>
   </div>
 
+  <h2 class="sec">完整复盘案例（事后回溯）</h2>
+  <div class="ev">
+    <h3>案例：美国零售销售公布日 —— 以本页已归档日线可核验的部分呈现</h3>
+    <p class="t"><span class="insuff">事后回溯案例，无事前判断记录</span> 本案例为事后整理，没有真实的事前判断存档，不补造事前观点。</p>
+    <p style="margin:6px 0 0;font-size:13.5px">方法与可核验部分：事件类复盘须记录预期、实际公布、准确公布时间（精确到分钟、注明时区），以及 BTC 事后 1 小时 / 24 小时 / 3 天 / 7 天表现，其中 1 小时收益必须用事件时刻前后的分钟线计算（非整点事件不得用整点小时线冒充）。</p>
+    <p style="margin:4px 0 0;font-size:13.5px"><b>本分享版的限制（如实说明）：</b>本快照只归档了 BTC 日线收盘，没有归档任一已发生宏观事件的预期 / 实际值与分钟线，因此<b>无法在本页诚实给出一个带 1 小时收益的完整数值案例</b>——硬填数字即为编造。完整案例（含非整点事件 1 小时收益）须在原面板用其归档的分钟线与事件卡生成后，再同步到分享版。下一次同步时优先补入，并附事件名称、公布时间（北京时间与发布地时间）、预期、实际、1h / 24h / 3d / 7d 收益与复盘结论。</p>
+  </div>
+
   <h2 class="sec">历史案例怎么积累</h2>
   <ul class="tight" style="font-size:13.5px">
     <li>宏观事件由日历自动同步（CPI / PCE / 非农 / FOMC 等，含预期与前值）；监管、安全事故、机构买卖、地缘事件在原面板手工建卡。</li>
@@ -349,7 +418,8 @@
   </ul>
   <div class="note warn"><b>分享版没有以上任何记录。</b>它只有上方各页展示的这一刻的公开市场数据快照；你的账本、判断、快照与计划都没有被复制到这个页面里。</div>
 
-  <h2 class="sec">把这一页放到 GitHub Pages（固定外部网址）</h2>
+  <h2 class="sec">帮助 · 把这一页放到 GitHub Pages（固定外部网址）</h2>
+  <p class="sub">部署教程已移入帮助区（本节），复盘页上方只保留判断与复盘机制。</p>
   <p>本页是一个自包含的单文件（样式与脚本全在文件内，无外部依赖），这正是 GitHub Pages 需要的形态。步骤：</p>
   <ol class="tight" style="font-size:14px">
     <li>点下方按钮，把本页下载为 <code>index.html</code>。</li>
@@ -371,8 +441,33 @@ git push</code></pre>
   <p class="sub">提醒：放到公开仓库后，任何人打开网址都能看到本页内容——本页只有公开市场数据、不含个人记录，可以公开；但以后重新生成分享版时，请先确认新快照里同样没有带入账本或判断记录。</p>
 </section>
 
+  <h2 class="sec">本次修订交付清单（分享版 v2）</h2>
+  <div class="grid" style="grid-template-columns:1fr;gap:12px">
+    <div class="card"><h3>已修改</h3><ul class="tight" style="font-size:13.5px;margin:0">
+      <li>OI / 资金费率：删除“杠杆不高、无清算风险”结论，改为证据不足并注明单一交易所、无全市场与历史分位限制；OI 改以 BTC 口径为主展示。</li>
+      <li>跨资产：删除 BTC 30 日 vs 他资产单日的对比归因，改为同起点规则说明。</li>
+      <li>情绪归入情绪类，不作独立资金证据；ETF、稳定币、情绪分开呈现；首页新增“今日三个关键变化”（证据 / 反向信息 / 下一步观察条件）。</li>
+      <li>删除“历史深回撤区间中段”；现价、已完成日收盘、已完成周收盘分开，均线只用对应口径比较。</li>
+      <li>行动计划：先查预算 / 上限 / 现金 / 挂单占用 / 数据完整性；“4 满足 3”、40/30/30、波动率距离与止损参数标为待验证规则并注明尚未验证；废止单一费率阈值定义杠杆降温；补齐每条计划必填字段、止损期限匹配与超限处理、基础定投的非机械止损政策。</li>
+      <li>主要指标增加“来源与计算”展开（价格、OI / 费率、跨资产、BIS / 宏观、ETF、稳定币）；稳定币口径核对、ETF 三态区分、净流动性混合时点标注均已写入对应小节。</li>
+      <li>恐惧指数长说明默认折叠；部署教程移入帮助区；快照标识加强（生成时间 + 距今时长自动计算）。</li>
+    </ul></div>
+    <div class="card"><h3>待完成</h3><ul class="tight" style="font-size:13.5px;margin:0">
+      <li>BTC / 纳指 / 黄金同起点归一化图：待原面板同步归档三资产同区间日线后绘制。</li>
+      <li>价格 / OI（BTC 口径）/ 资金费率上下对齐历史图与 OI 历史分位：待按日归档积累足够样本。</li>
+      <li>200 周均线长期图：待约 4 年周线样本归档。</li>
+      <li>带 1 小时收益的完整历史事件复盘案例：待原面板用归档分钟线与事件卡生成后同步（见事件页案例框）。</li>
+    </ul></div>
+    <div class="card"><h3>核验案例（本页数据自洽核对）</h3><ul class="tight" style="font-size:13.5px;margin:0">
+      <li><b>ETF 逐基金加总：</b>IBIT −143.5 + FBTC −41.9 + 其余已公布 0.0 = −185.4M，与公布总额 −185.4M 一致，差额 0.0M。✓</li>
+      <li><b>稳定币同口径端点差：</b>由当前值与涨跌幅反推，USDT 7 日前 ≈176.9B、USDC ≈70.5B，合计 7 日净变化 ≈ −2.75B，与页面公布值一致（百分比四舍五入带来约 ±0.1B 端点误差）。✓</li>
+      <li><b>非整点宏观事件 1 小时收益：</b><span class="insuff">受数据限制</span> 本快照无分钟线归档，无法核验，不以小时线或估算冒充；须在原面板验证后同步。</li>
+      <li><b>验证范围说明：</b>以上核验只证明分享版快照内部数据自洽；原面板的实时抓取、归档与计划生成是否运行正常，不在本页验证范围内，不能用本页说明代替原面板运行证据。</li>
+    </ul></div>
+  </div>
+
 <footer>
-  BTC 面板（分享版）· 静态快照，生成于 2026-11-16 12:10（北京时间）· 数据来源：Kraken、OKX、Farside、DefiLlama、FRED、Yahoo、Alternative.me、BIS、ECB、日本银行、中国人民银行、Faireconomy · 本页不构成投资建议。
+  BTC 面板（分享版 v2）· 静态快照，生成于 2026-11-16 12:10（北京时间）· 公开链接 https://mpp112.github.io/btc-panel/（以仓库 index.html 更新为准）· 数据来源：Kraken、OKX、Farside、DefiLlama、FRED、Yahoo、Alternative.me、BIS、ECB、日本银行、中国人民银行、Faireconomy · 本页不构成投资建议。
 </footer>
 </main>
 
@@ -454,6 +549,49 @@ git push</code></pre>
     });
     var t1=el('text',{x:P.l,y:H-6,'font-size':11,fill:'var(--dim)'}); t1.textContent='2026-10 初'; svg.appendChild(t1);
     var t2=el('text',{x:W-P.r,y:H-6,'text-anchor':'end','font-size':11,fill:'var(--dim)'}); t2.textContent='2026-11-13'; svg.appendChild(t2);
+    box.appendChild(svg);
+  })();
+
+  // ---- snapshot age ----
+  (function(){
+    var elx = document.getElementById('snapshot-age'); if(!elx) return;
+    var gen = new Date('2026-11-16T12:10:00+08:00').getTime();
+    function upd(){
+      var mins = Math.max(0, Math.floor((Date.now()-gen)/60000));
+      var txt = mins < 60 ? mins + ' 分钟' : (mins < 1440 ? Math.floor(mins/60) + ' 小时 ' + (mins%60) + ' 分钟' : Math.floor(mins/1440) + ' 天 ' + Math.floor((mins%1440)/60) + ' 小时');
+      elx.textContent = ' · 距今约 ' + txt + '（打开越晚，数据越旧）';
+    }
+    upd(); setInterval(upd, 60000);
+  })();
+
+  // ---- stablecoin endpoint chart (derived endpoints, tap to read) ----
+  (function(){
+    var box = document.getElementById('chart-stable'); if(!box) return;
+    var series = [
+      {name:'USDT', vals:[183.5,176.9,175.33], color:'var(--blue)'},
+      {name:'USDC', vals:[72.7,70.5,69.33], color:'var(--accent)'},
+      {name:'合计', vals:[256.2,247.4,244.66], color:'var(--up)'}
+    ];
+    var labels=['30 日前≈','7 日前≈','现在'];
+    var W=820,H=190,P={l:52,r:8,t:12,b:22};
+    var all=[]; series.forEach(function(s){ all=all.concat(s.vals); });
+    var min=Math.min.apply(null,all), max=Math.max.apply(null,all); var pd=(max-min)*0.15||1; min-=pd; max+=pd;
+    var X=function(i){ return P.l + (W-P.l-P.r)*(0.15+0.7*i/2); };
+    var Y=function(v){ return P.t + (H-P.t-P.b)*(1-(v-min)/(max-min)); };
+    var svg = el('svg',{viewBox:'0 0 '+W+' '+H, role:'img','aria-label':'稳定币流通量端点图，点击数据点读数'});
+    var read = el('text',{x:P.l, y:14,'font-size':12, fill:'var(--text)','class':'num'});
+    read.textContent='点击任意数据点查看读数'; svg.appendChild(read);
+    series.forEach(function(s){
+      var d = s.vals.map(function(v,i){ return (i===0?'M':'L')+X(i).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ');
+      svg.appendChild(el('path',{d:d, fill:'none', stroke:s.color,'stroke-width':1.8}));
+      s.vals.forEach(function(v,i){
+        var c = el('circle',{cx:X(i), cy:Y(v), r:7, fill:s.color, opacity:0.9, style:'cursor:pointer'});
+        c.addEventListener('click', function(){ read.textContent = s.name + ' · ' + labels[i] + ' $' + v.toFixed(2) + 'B'; });
+        svg.appendChild(c);
+      });
+      var tn = el('text',{x:X(2)+10, y:Y(s.vals[2])+4,'font-size':11, fill:'var(--dim)'}); tn.textContent=s.name; svg.appendChild(tn);
+    });
+    labels.forEach(function(lb,i){ var t=el('text',{x:X(i), y:H-6,'text-anchor':'middle','font-size':11, fill:'var(--dim)'}); t.textContent=lb; svg.appendChild(t); });
     box.appendChild(svg);
   })();
 
