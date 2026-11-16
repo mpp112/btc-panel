@@ -113,7 +113,7 @@
 <header class="banner">
   <div class="wrap">
     <h1>BTC 每日观察 · 分享版<span class="tag">静态快照 · 非实时行情</span></h1>
-    <p>版本：<b>分享版 v2（2026-11-16 修订）</b> · 公开链接：https://mpp112.github.io/btc-panel/<br>
+    <p>版本：<b>分享版 v2.1（2026-11-16 修订，补入历史事件案例）</b> · 公开链接：https://mpp112.github.io/btc-panel/<br>
     快照生成时间：<b class="num">2026-11-16 12:10（北京时间）</b><span id="snapshot-age"></span> · 观察日 2026-11-16（北京时间 08:00 切日）。
     本页是原 BTC 面板在这一刻的完整数据快照，可固定放在 GitHub Pages 上用外部网址打开；
     它<b>不会自动更新、不能保存任何记录</b>——定投账本、事件快照、每日复盘都只在原面板里。原面板有新数据时，需要重新生成一次本页。</p>
@@ -392,10 +392,34 @@
 
   <h2 class="sec">完整复盘案例（事后回溯）</h2>
   <div class="ev">
-    <h3>案例：美国零售销售公布日 —— 以本页已归档日线可核验的部分呈现</h3>
-    <p class="t"><span class="insuff">事后回溯案例，无事前判断记录</span> 本案例为事后整理，没有真实的事前判断存档，不补造事前观点。</p>
-    <p style="margin:6px 0 0;font-size:13.5px">方法与可核验部分：事件类复盘须记录预期、实际公布、准确公布时间（精确到分钟、注明时区），以及 BTC 事后 1 小时 / 24 小时 / 3 天 / 7 天表现，其中 1 小时收益必须用事件时刻前后的分钟线计算（非整点事件不得用整点小时线冒充）。</p>
-    <p style="margin:4px 0 0;font-size:13.5px"><b>本分享版的限制（如实说明）：</b>本快照只归档了 BTC 日线收盘，没有归档任一已发生宏观事件的预期 / 实际值与分钟线，因此<b>无法在本页诚实给出一个带 1 小时收益的完整数值案例</b>——硬填数字即为编造。完整案例（含非整点事件 1 小时收益）须在原面板用其归档的分钟线与事件卡生成后，再同步到分享版。下一次同步时优先补入，并附事件名称、公布时间（北京时间与发布地时间）、预期、实际、1h / 24h / 3d / 7d 收益与复盘结论。</p>
+    <h3>案例：美国 10 月非农就业报告（2026-11-06 公布）</h3>
+    <p class="t"><span class="insuff">事后回溯案例，无事前判断记录</span> 原面板的事件归档里没有这张卡的事前判断与事前快照，本案例为 2026-11-16 用公开来源事后整理，不补造事前观点；不含任何个人金额、持仓与记录。</p>
+    <p class="num" style="margin:6px 0 0;font-size:13.5px"><b>公布时间：</b>2026-11-06（周五）08:30 美东时间（EST）= 13:30 UTC = <b>21:30 北京时间</b> · 发布机构：美国劳工统计局（BLS）《就业形势报告》（USDL-26-1632）</p>
+    <p class="num" style="margin:4px 0 0;font-size:13.5px"><b>预期：</b>非农新增就业 +59,000（道琼斯调查）至 +65,000（路透 / LSEG 调查）；失业率 4.2%。</p>
+    <p class="num" style="margin:4px 0 0;font-size:13.5px"><b>实际公布：</b>非农新增 <b>+165,000</b>，高出预期约 +100,000（约为预期的 2.5–2.8 倍）；失业率 <b>4.1%</b>（预期 4.2%）。同时 9 月初值 +29,000 上修至 +60,000、8 月上修至 +186,000，两个月合计上修 +84,000。</p>
+    <p style="margin:8px 0 0;font-size:13.5px"><b>BTC 事后表现</b>（基准价 = 公布时刻 13:30 UTC 的分钟线价格 $75,936；各时点取该分钟价格，口径见下方「来源与计算」）：</p>
+    <div class="tablewrap"><table class="stack num" style="margin-top:4px">
+      <thead><tr><th>时点（UTC）</th><th class="r">BTC 价格</th><th class="r">相对公布时刻</th></tr></thead>
+      <tbody>
+        <tr><td data-l="时点">公布时刻 · 11-06 13:30</td><td class="r" data-l="价格">$75,936</td><td class="r" data-l="涨跌">—</td></tr>
+        <tr><td data-l="时点">+1 小时 · 11-06 14:30</td><td class="r" data-l="价格">$75,516</td><td class="r down" data-l="涨跌">−0.55%</td></tr>
+        <tr><td data-l="时点">+24 小时 · 11-07 13:30</td><td class="r" data-l="价格">$75,798</td><td class="r down" data-l="涨跌">−0.18%</td></tr>
+        <tr><td data-l="时点">+3 天 · 11-09 13:30</td><td class="r" data-l="价格">$74,670</td><td class="r down" data-l="涨跌">−1.67%</td></tr>
+        <tr><td data-l="时点">+7 天 · 11-13 13:30</td><td class="r" data-l="价格">$69,353</td><td class="r down" data-l="涨跌">−8.67%</td></tr>
+      </tbody>
+    </table></div>
+    <p class="num" style="margin:4px 0 0;font-size:13px;color:var(--dim)">7 天窗口内：最高仅 +0.3%（$76,152），最大回撤 −11.0%（最低 $67,555，小时线低点）——窗口内几乎单边下行。</p>
+    <p style="margin:8px 0 0;font-size:13.5px"><b>复盘：</b></p>
+    <ul class="tight" style="font-size:13.5px;margin-top:2px">
+      <li><b>方向对、幅度小：</b>就业远超预期推高加息预期（公布后媒体引用的 CME FedWatch 读数：12 月加息概率升至约 77%），与 BTC 1 小时内走弱方向一致——但幅度只有 −0.55%，24 小时已基本收回（−0.18%）。只看第一小时，会高估这个事件的影响。</li>
+      <li><b>7 天跌幅不能归因于本事件：</b>窗口内 11-10 还有 CPI 超预期落地（月率 +0.4%，预期 +0.3%），且 BTC 当时已处在 10 月高点以来的下行趋势中（本页日线：11-06 收盘 $75,742 → 11-13 收盘 $68,236）。−8.67% 是事件、后续数据与趋势的合成，不是这份就业报告的“效果”。</li>
+      <li><b>还有哪些解释：</b>同期 ETF 持续净流出、稳定币供应收缩（见今日页），需求侧本就偏弱，下跌也可能主要是现货需求撤退的延续，与单个数据公布关系有限——此为<span class="maybe">可能解释</span>，非已证实因果。</li>
+      <li><b>可复用的检查点：</b>① 意外方向与 1 小时方向一致，不等于幅度足够行动；② 评估事件影响至少看满 24 小时再下结论；③ 多日窗口必须列出窗口内的其他事件（如本例的 CPI 与 PPI），否则归因无效。</li>
+    </ul>
+    <details class="srcbox"><summary>来源与计算 · 本案例</summary>
+      <p>事件与预期：BLS《就业形势报告》2026 年 10 月（USDL-26-1632，2026-11-06 08:30 美东发布）；实际值与修订值见 <a href="https://news.kilambi.com/stories/2026-11-06-us-payrolls-rise-165000-october/" target="_blank" rel="noreferrer">发布当日报道（转录 BLS 全文）</a>；各调查预期与发布时间（08:30 ET = 13:30 UTC）见 <a href="https://forexuro.com/articles/nfp-october-2026-result" target="_blank" rel="noreferrer">Forexuro 事件页</a> 与 <a href="https://fxmacrodata.com/united-states/non-farm-payrolls-change/announcements/usd_non_farm_payrolls_change_2026-11-06" target="_blank" rel="noreferrer">FXMacroData 发布记录</a>。</p>
+      <p>价格：Coinbase Exchange BTC-USD 分钟线（接口 api.exchange.coinbase.com/products/BTC-USD/candles），2026-11-16 抓取。各时点价格取该分钟 K 线的开盘价（该分钟第一笔成交价位）；收益 = 时点价 ÷ 公布时刻价 − 1。交叉核对：Kraken 11-06 13:00 UTC 小时线开 $75,930 / 高 $75,992 / 低 $75,481，公布时刻价 $75,936 位于其区间内，两所读数一致。7 天最大回撤由同期小时线低点计算。缺失处理：本案例各时点分钟线均有数据，无缺失、无估算填充。</p>
+    </details>
   </div>
 
   <h2 class="sec">历史案例怎么积累</h2>
@@ -403,7 +427,7 @@
     <li>宏观事件由日历自动同步（CPI / PCE / 非农 / FOMC 等，含预期与前值）；监管、安全事故、机构买卖、地缘事件在原面板手工建卡。</li>
     <li>每张事件卡记录：预期、实际、前值与修订、预期差、事前判断（可附 1–5 信心程度与判断失效条件）、BTC 事后 1h / 24h / 3d / 7d 反应、24h 最大回撤、同期美元 / 利率 / 纳指 / 黄金变化，以及复盘结论与「还有哪些解释（含反例）」。</li>
     <li>事前快照版本化：事件前 48 小时内每日刷新自动保存一份，手动也可保存；事后修订事前字段只追加新版本，原版本保留——避免用事后信息改写事前判断。</li>
-    <li>分享版不带历史事件卡与复盘内容：那些是持续积累的个人记录，只在原面板里。</li>
+    <li>分享版只带已用公开来源核验的历史案例（如上非农案例）：只含事件本身与公开行情，不含事前判断、个人金额与持仓；其余持续积累的事件卡与复盘记录仍只在原面板里。</li>
   </ul>
 </section>
 
@@ -441,7 +465,7 @@ git push</code></pre>
   <p class="sub">提醒：放到公开仓库后，任何人打开网址都能看到本页内容——本页只有公开市场数据、不含个人记录，可以公开；但以后重新生成分享版时，请先确认新快照里同样没有带入账本或判断记录。</p>
 </section>
 
-  <h2 class="sec">本次修订交付清单（分享版 v2）</h2>
+  <h2 class="sec">本次修订交付清单（分享版 v2.1）</h2>
   <div class="grid" style="grid-template-columns:1fr;gap:12px">
     <div class="card"><h3>已修改</h3><ul class="tight" style="font-size:13.5px;margin:0">
       <li>OI / 资金费率：删除“杠杆不高、无清算风险”结论，改为证据不足并注明单一交易所、无全市场与历史分位限制；OI 改以 BTC 口径为主展示。</li>
@@ -451,23 +475,24 @@ git push</code></pre>
       <li>行动计划：先查预算 / 上限 / 现金 / 挂单占用 / 数据完整性；“4 满足 3”、40/30/30、波动率距离与止损参数标为待验证规则并注明尚未验证；废止单一费率阈值定义杠杆降温；补齐每条计划必填字段、止损期限匹配与超限处理、基础定投的非机械止损政策。</li>
       <li>主要指标增加“来源与计算”展开（价格、OI / 费率、跨资产、BIS / 宏观、ETF、稳定币）；稳定币口径核对、ETF 三态区分、净流动性混合时点标注均已写入对应小节。</li>
       <li>恐惧指数长说明默认折叠；部署教程移入帮助区；快照标识加强（生成时间 + 距今时长自动计算）。</li>
+      <li>（v2.1）补入一个完整历史事件复盘案例：2026-10 非农就业报告（事后回溯，无事前判断记录）——预期 / 实际 / 精确公布时间 / BTC 1h–7d 表现与复盘，全部取自公开可核验来源（BLS 发布与调查预期、Coinbase 分钟线、Kraken 交叉核对），不含个人金额、持仓与记录（见事件页）。</li>
     </ul></div>
     <div class="card"><h3>待完成</h3><ul class="tight" style="font-size:13.5px;margin:0">
       <li>BTC / 纳指 / 黄金同起点归一化图：待原面板同步归档三资产同区间日线后绘制。</li>
       <li>价格 / OI（BTC 口径）/ 资金费率上下对齐历史图与 OI 历史分位：待按日归档积累足够样本。</li>
       <li>200 周均线长期图：待约 4 年周线样本归档。</li>
-      <li>带 1 小时收益的完整历史事件复盘案例：待原面板用归档分钟线与事件卡生成后同步（见事件页案例框）。</li>
+      <li>更多历史事件案例：随原面板事件卡积累后，逐个按本页非农案例的口径（公开来源核验 + 分钟线计算）补入。</li>
     </ul></div>
     <div class="card"><h3>核验案例（本页数据自洽核对）</h3><ul class="tight" style="font-size:13.5px;margin:0">
       <li><b>ETF 逐基金加总：</b>IBIT −143.5 + FBTC −41.9 + 其余已公布 0.0 = −185.4M，与公布总额 −185.4M 一致，差额 0.0M。✓</li>
       <li><b>稳定币同口径端点差：</b>由当前值与涨跌幅反推，USDT 7 日前 ≈176.9B、USDC ≈70.5B，合计 7 日净变化 ≈ −2.75B，与页面公布值一致（百分比四舍五入带来约 ±0.1B 端点误差）。✓</li>
-      <li><b>非整点宏观事件 1 小时收益：</b><span class="insuff">受数据限制</span> 本快照无分钟线归档，无法核验，不以小时线或估算冒充；须在原面板验证后同步。</li>
+      <li><b>非整点宏观事件 1 小时收益：</b>2026-11-06 非农公布于 13:30 UTC（非整点），用 Coinbase 分钟线取公布时刻 $75,936 与 +1 小时 $75,516，1 小时收益 −0.55%；Kraken 同小时线区间（低 $75,481 / 高 $75,992）交叉核对一致。✓（见事件页完整案例）</li>
       <li><b>验证范围说明：</b>以上核验只证明分享版快照内部数据自洽；原面板的实时抓取、归档与计划生成是否运行正常，不在本页验证范围内，不能用本页说明代替原面板运行证据。</li>
     </ul></div>
   </div>
 
 <footer>
-  BTC 面板（分享版 v2）· 静态快照，生成于 2026-11-16 12:10（北京时间）· 公开链接 https://mpp112.github.io/btc-panel/（以仓库 index.html 更新为准）· 数据来源：Kraken、OKX、Farside、DefiLlama、FRED、Yahoo、Alternative.me、BIS、ECB、日本银行、中国人民银行、Faireconomy · 本页不构成投资建议。
+  BTC 面板（分享版 v2.1）· 静态快照，生成于 2026-11-16 12:10（北京时间）· 公开链接 https://mpp112.github.io/btc-panel/（以仓库 index.html 更新为准）· 数据来源：Kraken、OKX、Farside、DefiLlama、FRED、Yahoo、Alternative.me、BIS、ECB、日本银行、中国人民银行、Faireconomy；事件页历史案例另用 BLS 发布与 Coinbase 分钟线 · 本页不构成投资建议。
 </footer>
 </main>
 
