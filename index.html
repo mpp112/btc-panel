@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>BTC 面板（分享版）</title>
+<style>
+  :root{
+    --bg:#faf8f4; --surface:#ffffff; --surface2:#f3efe7; --border:#e2dccc; --border-strong:#cbbfa3;
+    --text:#1d1a14;
+    --dim:#6f675a; --accent:#d97a06; --accent-soft:#fdf0dd;
+    --up:#178a52; --down:#c93a3a; --blue:#3d6f9e;
+    --shadow:0 1px 3px rgba(60,45,10,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#131110; --surface:#1d1a17; --surface2:#26221d; --border:#38322a; --border-strong:#574c3a;
+      --text:#ece7dd; --dim:#a29885; --accent:#f09a26; --accent-soft:#33270f;
+      --up:#3cb87c; --down:#e26060; --blue:#7aa2c9;
+      --shadow:0 1px 3px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:15px;line-height:1.65}
+  .num{font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum"}
+  .wrap{max-width:880px;margin:0 auto;padding:0 16px 40px}
+  button{font:inherit;cursor:pointer;min-height:36px}
+  a{color:var(--accent)}
+  /* snapshot banner */
+  .banner{border-bottom:2px solid var(--accent);background:var(--accent-soft)}
+  .banner .wrap{padding-top:12px;padding-bottom:12px}
+  .banner h1{font-size:19px;margin:0;letter-spacing:.01em}
+  .banner p{margin:4px 0 0;font-size:12.5px;color:var(--dim)}
+  .banner .tag{display:inline-block;border:1px solid var(--accent);color:var(--accent);
+    font-size:11px;padding:1px 7px;border-radius:99px;margin-left:8px;vertical-align:2px;font-weight:600}
+  /* tabs */
+  nav.tabs{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);
+    overflow-x:auto;scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar{display:none}
+  nav.tabs .wrap{display:flex;gap:2px;padding-top:0;padding-bottom:0}
+  nav.tabs button{background:none;border:none;border-bottom:2.5px solid transparent;color:var(--dim);
+    padding:10px 12px;font-size:14px;white-space:nowrap;min-height:44px}
+  nav.tabs button[aria-selected="true"]{color:var(--text);font-weight:700;border-bottom-color:var(--accent)}
+  section.page{display:none;padding-top:18px}
+  section.page.active{display:block}
+  h2.sec{font-size:16px;margin:26px 0 4px;padding-top:16px;border-top:1px solid var(--border)}
+  h2.sec:first-child{border-top:none;padding-top:0;margin-top:0}
+  .sub{font-size:12.5px;color:var(--dim);margin:0 0 12px;line-height:1.6}
+  .price-big{font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-.01em}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+  @media(min-width:640px){.grid.c4{grid-template-columns:repeat(4,1fr)}.grid.c3{grid-template-columns:repeat(3,1fr)}}
+  .stat label{display:block;font-size:12px;color:var(--dim);margin-bottom:2px}
+  .stat .v{font-size:19px;font-weight:700;line-height:1.25}
+  .stat .f{font-size:11.5px;color:var(--dim);margin-top:1px;line-height:1.5}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:14.5px}
+  .up{color:var(--up)} .down{color:var(--down)}
+  .src{font-size:11px;color:var(--dim);margin-top:8px}
+  .note{border:1px dashed var(--border-strong);border-radius:8px;padding:10px 12px;font-size:13px;background:var(--surface)}
+  .warn{border-color:var(--accent)}
+  ul.tight{margin:6px 0;padding-left:20px}
+  ul.tight li{margin:4px 0}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:12px;color:var(--dim);font-weight:600}
+  td.r,th.r{text-align:right}
+  .tablewrap{overflow-x:auto}
+  @media(max-width:560px){
+    table.stack thead{display:none}
+    table.stack tr{display:block;border-bottom:1px solid var(--border);padding:6px 0}
+    table.stack td{display:flex;justify-content:space-between;gap:12px;border-bottom:none;padding:4px 2px}
+    table.stack td::before{content:attr(data-l);color:var(--dim);font-size:12px}
+    table.stack td.r{text-align:right}
+  }
+  .chartbox{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;box-shadow:var(--shadow)}
+  .chartbox p{margin:0 0 6px;font-size:12px;color:var(--dim)}
+  svg{display:block;width:100%;height:auto}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .chip{font-size:11px;border:1px solid var(--border);border-radius:99px;padding:2px 9px;color:var(--dim)}
+  .chip b{color:var(--text)}
+  .ev{border:1px solid var(--border);border-radius:10px;padding:13px 14px;background:var(--surface);margin-bottom:10px;box-shadow:var(--shadow)}
+  .ev h3{margin:0;font-size:14.5px}
+  .ev .t{font-size:12px;color:var(--dim)}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:8px;
+    padding:9px 18px;font-weight:700;font-size:14px;min-height:40px}
+  .btn-ghost{display:inline-block;background:none;color:var(--accent);border:1px solid var(--accent);
+    border-radius:8px;padding:8px 16px;font-weight:600;font-size:14px;min-height:40px}
+  pre{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;
+    font-size:12.5px;overflow-x:auto;line-height:1.7}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .cond{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)}
+  .cond:last-child{border-bottom:none}
+  .cond .mark{font-weight:800;width:20px;flex:none;text-align:center}
+  footer{margin-top:36px;border-top:1px solid var(--border);padding-top:14px;font-size:12px;color:var(--dim)}
+  .fngbar{height:10px;border-radius:99px;background:linear-gradient(to right,#c93a3a 0 24%,#d97a06 25% 44%,#b8ad97 45% 55%,#5da271 56% 75%,#178a52 76% 100%);position:relative;margin:10px 0 4px}
+  @media (prefers-color-scheme: dark){.fngbar{background:linear-gradient(to right,#e26060 0 24%,#f09a26 25% 44%,#8a7f68 45% 55%,#4d9a6c 56% 75%,#3cb87c 76% 100%)}}
+  .fngbar i{position:absolute;top:-4px;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--text);transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<header class="banner">
+  <div class="wrap">
+    <h1>BTC 每日观察 · 分享版<span class="tag">静态只读快照</span></h1>
+    <p>快照时间：<b class="num">2026-11-16 12:10（北京时间）</b> · 观察日 2026-11-16（北京时间 08:00 切日）。
+    本页是原 BTC 面板在这一刻的完整数据快照，可固定放在 GitHub Pages 上用外部网址打开；
+    它<b>不会自动更新、不能保存任何记录</b>——定投账本、事件快照、每日复盘都只在原面板里。原面板有新数据时，需要重新生成一次本页。</p>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="面板页签">
+  <div class="wrap" role="tablist" aria-label="页签">
+    <button role="tab" aria-selected="true" data-tab="today">今日观察</button>
+    <button role="tab" aria-selected="false" data-tab="position">长期位置与定投</button>
+    <button role="tab" aria-selected="false" data-tab="plans">行动计划</button>
+    <button role="tab" aria-selected="false" data-tab="liquidity">全球流动性</button>
+    <button role="tab" aria-selected="false" data-tab="events">事件与历史案例</button>
+    <button role="tab" aria-selected="false" data-tab="review">复盘与部署</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ============ 今日观察 ============ -->
+<section class="page active" id="page-today">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 16px">
+    <div class="price-big num">$64,812</div>
+    <div class="num" style="font-size:17px;font-weight:700"><span class="down">−0.8% <span style="font-size:12px;font-weight:400;color:var(--dim)">24h</span></span></div>
+    <div class="num" style="font-size:14px"><span class="down">−13.9% <span style="font-size:12px;color:var(--dim)">7日</span></span></div>
+    <div class="num" style="font-size:14px"><span class="down">−20.3% <span style="font-size:12px;color:var(--dim)">30日</span></span></div>
+  </div>
+  <p class="sub num" style="margin-top:6px">Kraken 现货 · 24h 高 $66,087 · 低 $63,731 · 振幅 3.7% · 24h 成交量 2,829 BTC · 30 日波动率（日收益标准差）2.25%</p>
+
+  <div class="grid c4" style="margin-top:14px">
+    <div class="stat"><label>ETF 净流 · 11-13（美东交易日）</label><div class="v num down">−$185.4M</div><div class="f num">5 日累计 −$1,065.3M · 20 日累计 −$2,248.2M（Farside）</div></div>
+    <div class="stat"><label>稳定币 7 日净变化</label><div class="v num down">−$2.75B</div><div class="f num">USDT −0.87% · USDC −1.72%（7 日，DefiLlama）</div></div>
+    <div class="stat"><label>未平仓量 OI · OKX BTC 永续</label><div class="v num">$2.12B</div><div class="f num">≈ 32,660 BTC · 3,265,987 张（1 张 = 0.01 BTC）· 单一交易所口径，非全市场</div></div>
+    <div class="stat"><label>资金费率（预测）/ 8h · OKX</label><div class="v num">−0.0035%</div><div class="f num">已结算 −0.0013% · 周期 8h（按合约实际结算时间）· 年化约 −3.9%</div></div>
+  </div>
+
+  <h2 class="sec">市场情绪 · 恐惧与贪婪指数</h2>
+  <p class="sub">辅助指标，不是独立证据：官方构成含波动率 25%、动量与成交量 25%、社交媒体 15%、BTC 市占率 10%、搜索趋势 10%，调查部分（15%）目前暂停。它与价格、波动率高度重叠，不能与价格下跌算作两份证据。</p>
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:4px 16px">
+    <div class="num" style="font-size:40px;font-weight:800;line-height:1;color:var(--down)">10</div>
+    <div style="font-size:16px;font-weight:700">极度恐惧 <span style="font-size:12px;font-weight:400;color:var(--dim)">Extreme Fear · 2026-11-16</span></div>
+    <div class="num" style="font-size:13px;color:var(--dim)">较昨日 0 点 · 较 7 天前 −19 点 · 已连续 4 天处于极度恐惧</div>
+  </div>
+  <div class="fngbar" aria-hidden="true"><i style="left:10%"></i></div>
+  <p class="sub num">观察对照：近 7 日情绪 −19 点，同期 ETF 最近 5 个交易日累计 −$1,065.3M、稳定币 7 日净变化 −$2.75B——情绪、ETF 与稳定币三者同向走弱，暂未出现「恐惧加深但资金仍在改善」的分歧。来源：Alternative.me（每日发布）。</p>
+
+  <h2 class="sec">价格 · 近 180 日</h2>
+  <div class="chartbox"><p>Kraken 日线收盘（2026-05-21 至 2026-11-16）· 虚线为 200 日均线 $72,865</p><div id="chart-price"></div></div>
+
+  <h2 class="sec">ETF 每日净流 · 近 30 个交易日</h2>
+  <div class="chartbox"><p>美国现货 BTC ETF 合计净流入（$M，Farside）· 最近交易日 2026-11-13：−185.4</p><div id="chart-etf"></div></div>
+  <p class="sub" style="margin-top:8px">11 月以来 ETF 持续净流出：近 5 个交易日每天都是负值，20 日累计 −$2.25B。这是本轮下跌中需求侧最明确的证据，与稳定币流通量收缩（30 日 −$11.6B）方向一致。</p>
+
+  <h2 class="sec">跨资产表现</h2>
+  <div class="grid c4">
+    <div class="stat"><label>纳斯达克综合</label><div class="v num">$25,136</div><div class="f num down">最近交易日 −0.91%（Yahoo）</div></div>
+    <div class="stat"><label>黄金期货</label><div class="v num">$3,878</div><div class="f num down">最近交易日 −0.21%（Yahoo）</div></div>
+    <div class="stat"><label>BTC 30 日表现</label><div class="v num down">−20.3%</div><div class="f">同期明显弱于纳指与黄金，属自身需求走弱而非单纯宏观拖累</div></div>
+    <div class="stat"><label>30 日波动率</label><div class="v num">2.25%</div><div class="f">日收益标准差；下跌伴随波动抬升，与情绪指数下行是同一件事的不同表述</div></div>
+  </div>
+
+  <h2 class="sec">今日要点</h2>
+  <ul class="tight">
+    <li><b>价格在两条长期均线下方：</b>现价 $64,812 低于 200 日均线 $72,865 与 200 周均线 $68,366，距历史高点 $126,198 回撤 −48.6%。</li>
+    <li><b>需求侧三项同向走弱：</b>ETF 20 日累计净流出 $2.25B、稳定币 7 日净减 $2.75B、情绪降至 10（极度恐惧，连 4 天）。</li>
+    <li><b>杠杆不高：</b>OKX 资金费率预测 −0.0035%/8h（空头略占优但幅度很小），OI $2.12B；没有多头拥挤需要被清算的迹象，下跌更像现货需求撤退而非杠杆踩踏。</li>
+    <li><b>接下来 72 小时事件密集：</b>美联储主席讲话、美国零售销售、FOMC 会议纪要依次落地（见「事件」页），事前判断与失效条件请在原面板里记录。</li>
+  </ul>
+  <p class="src">数据来源：Kraken（价格）· OKX（OI / 资金费率）· Farside（ETF）· DefiLlama（稳定币）· FRED（宏观）· Yahoo（跨资产）· Alternative.me（情绪）· BIS（全球流动性）</p>
+</section>
+
+<!-- ============ 长期位置与定投 ============ -->
+<section class="page" id="page-position">
+  <h2 class="sec">长期位置</h2>
+  <p class="sub">周线收盘与 200 周均线；回撤以 Kraken 历史最高价为基准。</p>
+  <div class="grid c4">
+    <div class="stat"><label>当前价格</label><div class="v num">$64,812</div><div class="f">快照时刻 Kraken 现货</div></div>
+    <div class="stat"><label>200 日均线</label><div class="v num">$72,865</div><div class="f">日收盘在其下方（−11.1%）</div></div>
+    <div class="stat"><label>200 周均线</label><div class="v num">$68,366</div><div class="f">周收盘在其下方（−5.2%）· 长期趋势基准</div></div>
+    <div class="stat"><label>距历史高点回撤</label><div class="v num down">−48.6%</div><div class="f num">高点 $126,198</div></div>
+  </div>
+  <div class="note" style="margin-top:16px">链上估值（MVRV、已实现价格、SOPR 等）属于第二阶段指标，原面板第一版未接入，分享版同样不估算。</div>
+
+  <h2 class="sec">定投账本与对照账户</h2>
+  <p>原面板里有两套互相独立的记录：</p>
+  <ul class="tight">
+    <li><b>我的定投账本：</b>逐笔记录实际投入（日期、金额、费用、买入 BTC 数量），自动算累计投入、平均成本、当前市值与浮动收益。</li>
+    <li><b>对照账户（原计划执行）：</b>设定一笔固定计划（每期金额、每周 / 每月、起始日），用历史日收盘价模拟「从不调整」的执行结果，与实际账本对照——看临时加仓或暂停到底有没有改善结果。</li>
+  </ul>
+  <div class="note warn"><b>分享版不包含这两部分数据。</b>账本和计划是个人记录，只保存在原面板里，不会出现在这个公开页面上；本页打开后也不能新增记录。需要记账或改计划，请回原面板操作。</div>
+
+  <h2 class="sec">怎么读这个位置</h2>
+  <ul class="tight">
+    <li>价格同时跌破 200 日与 200 周均线，按原面板的定义属于长期趋势转弱区，而不是「均线附近震荡」。</li>
+    <li>距高点回撤 −48.6%，已接近历史深回撤区间的中段；回撤幅度本身不构成买入理由，原面板不设任何与极端读数自动绑定的动作。</li>
+    <li>定投是否继续、暂停或调整，依据的是预算、仓位上限与长期逻辑（见「行动计划」页的规则区分），不是价格跌了多少。</li>
+  </ul>
+</section>
+
+<!-- ============ 行动计划 ============ -->
+<section class="page" id="page-plans">
+  <h2 class="sec">三类计划，严格分开</h2>
+  <div class="grid c3">
+    <div class="card"><h3>基础定投</h3><p style="margin:0;font-size:13.5px">按预算、仓位上限与长期逻辑决定执行或暂停，<b>不设价格止损</b>。它是长期仓位的建立方式，不是交易。</p></div>
+    <div class="card"><h3>定投挂单</h3><p style="margin:0;font-size:13.5px">本期固定金额拆成限价档位，必须写明到期日与未成交处理规则（继续等待，还是回归基础定投市价执行）。原面板的档位间距规则为现价下方 1× / 2× / 3× 近 30 日波动率，金额按 40 / 30 / 30 分配——这是间距规则，不是预测的支撑位。</p></div>
+    <div class="card"><h3>战术加仓</h3><p style="margin:0;font-size:13.5px">额外的交易性买入，必须带价格止损、失效条件、最长持有期与退出计划；仓位按「单笔可承受亏损 ÷（入场价 − 止损价 + 每 BTC 成本）」计算。止损距离规则：max（2× 30 日波动率，8%），上限 25%。</p></div>
+  </div>
+  <p class="sub" style="margin-top:10px">因市场情况临时调整的动作会单独记成新计划，不改动原计划——这样「原计划执行」的对照账户才始终是公平的基准。所有计划在原面板里版本化保存，修订只追加新版本，旧版本不覆盖。</p>
+
+  <h2 class="sec">战术加仓触发条件 · 本快照核对</h2>
+  <p class="sub">原面板规则：以下 4 个可观测条件至少满足 3 个，才生成战术加仓草稿；否则结论为「证据不足」，不生成。用本快照数据逐项核对：</p>
+  <div class="card" style="padding:6px 14px">
+    <div class="cond"><div class="mark up">✓</div><div><b>恐惧与贪婪指数 ≤ 24</b><br><span class="num" style="font-size:13px;color:var(--dim)">当前 10（极度恐惧）——满足</span></div></div>
+    <div class="cond"><div class="mark down">✗</div><div><b>ETF 5 日累计净流入 &gt; 0</b><br><span class="num" style="font-size:13px;color:var(--dim)">当前 5 日累计 −$1,065.3M——不满足</span></div></div>
+    <div class="cond"><div class="mark down">✗</div><div><b>稳定币 7 日净变化 &gt; 0</b><br><span class="num" style="font-size:13px;color:var(--dim)">当前 −$2.75B——不满足</span></div></div>
+    <div class="cond"><div class="mark up">✓</div><div><b>杠杆降温：OI 7 日 ≤ 0 或资金费率 ≤ 0.01%/期</b><br><span class="num" style="font-size:13px;color:var(--dim)">资金费率（预测）−0.0035%/8h ≤ 0.01%——满足</span></div></div>
+  </div>
+  <div class="note warn" style="margin-top:12px"><b>结论：2 / 4，证据不足，不生成战术加仓草稿。</b>情绪极端与杠杆降温成立，但资金侧（ETF、稳定币）仍在净流出——按规则，抄底叙事缺资金确认。风险档案（月预算、仓位上限、单笔可承受亏损等）只保存在原面板，分享版不显示任何金额与仓位数字。</div>
+</section>
+
+<!-- ============ 全球流动性 ============ -->
+<section class="page" id="page-liquidity">
+  <h2 class="sec">利率与美元</h2>
+  <p class="sub">资金成本与金融条件。来源：FRED，按各序列真实观测日期呈现；缺失值不补零。</p>
+  <div class="grid c3">
+    <div class="stat"><label>联邦基金有效利率 · 2026-11-12</label><div class="v num">3.88%</div><div class="f">DFF</div></div>
+    <div class="stat"><label>2 年期美债收益率 · 2026-11-12</label><div class="v num">4.86%</div><div class="f">DGS2</div></div>
+    <div class="stat"><label>10 年期实际利率 (TIPS) · 2026-11-12</label><div class="v num">2.86%</div><div class="f">DFII10</div></div>
+    <div class="stat"><label>10 年期美债收益率 · 2026-11-12</label><div class="v num">5.10%</div><div class="f">DGS10</div></div>
+    <div class="stat"><label>广义美元指数 · 2026-11-06</label><div class="v num">121.88</div><div class="f">DTWEXBGS（贸易加权，非 ICE 美元指数）</div></div>
+    <div class="stat"><label>高收益债信用利差 · 2026-11-12</label><div class="v num">3.20%</div><div class="f">BAMLH0A0HYM2 · 越高融资压力越大</div></div>
+  </div>
+  <div class="note" style="margin-top:14px"><b>市场预期（CME FedWatch）：</b>官方工具网页可免费查看，但程序化 API 是付费订阅（CME 官方标价日终版 $25/月起），原面板不自动抓取、不估算，只把手动读数存成带时间的快照。分享版不带任何手动读数，需要时请打开
+  <a href="https://www.cmegroup.com/en/markets/interest-rates/cme-fedwatch-tool.html" target="_blank" rel="noreferrer">CME FedWatch 官方工具 ↗</a> 自行查看。</div>
+
+  <h2 class="sec">美国体系流动性</h2>
+  <p class="sub">各项独立展示（FRED 周频）。净流动性为代理口径，仅作背景参考，不是官方指标。</p>
+  <div class="grid c4">
+    <div class="stat"><label>净流动性代理</label><div class="v num">$5.84T</div><div class="f">美联储总资产 − TGA − ON RRP；三项时点不完全一致（11-11 / 11-11 / 11-13），只看背景</div></div>
+    <div class="stat"><label>美联储总资产 · 2026-11-11</label><div class="v num">$6.76T</div><div class="f num">WALCL · 周变化 +$10.7B</div></div>
+    <div class="stat"><label>银行准备金 · 2026-11-11</label><div class="v num">$2.96T</div><div class="f num">WRESBAL · 周变化 +$30.5B</div></div>
+    <div class="stat"><label>TGA · 2026-11-11</label><div class="v num">$0.91T</div><div class="f num">WTREGEN · 周变化 −$42.8B</div></div>
+  </div>
+  <p class="sub num" style="margin-top:8px">ON RRP 隔夜逆回购（RRPONTSYD）：$0.33B（2026-11-13）——余额已降至极低水平，其增减对体系流动性的边际影响可以忽略，读它主要看「是否已基本出清」。</p>
+
+  <h2 class="sec">主要经济体广义货币</h2>
+  <p class="sub">覆盖美、中、欧、日四个经济体，口径分别为美国 M2、中国 M2、欧元区 M3、日本 M2，全部取自各央行本源发布。每个序列都是本币计价存量，同比增速直接由本币存量计算、全程不做汇率折算。月频数据发布滞后约 1–2 个月，只看背景趋势。</p>
+  <div class="grid c4">
+    <div class="stat"><label>美国 M2 同比</label><div class="v num up">+5.7%</div><div class="f num">$23.41T（USD）· 截至 2026-09 · FRED M2SL</div></div>
+    <div class="stat"><label>中国 M2 同比</label><div class="v num up">+7.1%</div><div class="f num">¥359.06 万亿（CNY）· 截至 2026-10 · 人民银行金融统计</div></div>
+    <div class="stat"><label>欧元区 M3 同比</label><div class="v num up">+4.3%</div><div class="f num">€17.72 万亿（EUR）· 截至 2026-09 · ECB BSI（M3 口径较 M2 略宽）</div></div>
+    <div class="stat"><label>日本 M2 同比</label><div class="v num up">+1.7%</div><div class="f num">¥129.14 万亿（JPY）· 截至 2026-10 · 日本银行 Money Stock</div></div>
+  </div>
+
+  <h2 class="sec">BIS 全球流动性（季度）</h2>
+  <div class="grid" style="grid-template-columns:1fr;gap:12px">
+    <div class="card">
+      <h3>BIS 全球美元信用 · 美国境外非银行借款人（美元计价）</h3>
+      <div class="num" style="font-size:26px;font-weight:800">$15.13T <span style="font-size:13px;font-weight:400;color:var(--dim)">2026-Q2 · 季度</span></div>
+      <p class="num" style="margin:4px 0 0;font-size:13px">同比 <span class="up">+8.1%</span> · 环比 <span class="up">+2.4%</span> · 银行贷款 + 国际债券合计，流向美国境外非银行借款人</p>
+      <p class="src">来源：BIS 全球流动性指标（GLI）官方 SDMX API，序列 Q.USD.3P.N.A.I.B.USD。已与 BIS 统计发布交叉核对（2025-Q4 $14.26T ≈ 官方公布 $14.3T）。季度发布、滞后约一个季度。</p>
+    </div>
+    <div class="card">
+      <h3>BIS 国际债权总额（全球，全部门）</h3>
+      <div class="num" style="font-size:26px;font-weight:800">$54.59T <span style="font-size:13px;font-weight:400;color:var(--dim)">2026-Q2 · 季度</span></div>
+      <p class="num" style="margin:4px 0 0;font-size:13px">同比 <span class="up">+9.9%</span> · 环比 <span class="up">+2.3%</span> · 银行跨境与本地外币债权合计，美元计价</p>
+      <p class="src">来源：BIS GLI，序列 Q.TO1.5J.A.B.I.A.USD。注意：这是银行国际债权总量，含银行同业与各币种债权，不能单独代表全球美元信用；美元信用看上方专列。</p>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:10px">读法：全球信用存量仍在扩张（两项同比均为正），但这是季度、滞后约一季的慢变量——它说明背景不紧，不说明当下边际在改善。边际看美国利率、利差与上面的资金流模块。</p>
+
+  <h2 class="sec">ETF 需求核对</h2>
+  <p class="sub">Farside 分基金明细（$M）：逐日核对「分基金加总」与公布的「总净流入」是否一致；未公布的基金保持空值，不按 0 计算。</p>
+  <p class="num" style="font-size:14px">2026-11-13（美东交易日）· 公布总净流入 <b>−185.4M</b> · 分基金加总 <b>−185.4M</b> · <span class="up">差额 0.0M（一致）</span></p>
+  <div class="chips num">
+    <span class="chip">IBIT <b class="down">−143.5</b></span>
+    <span class="chip">FBTC <b class="down">−41.9</b></span>
+    <span class="chip">其余基金 <b>0.0</b></span>
+  </div>
+
+  <h2 class="sec">稳定币资金</h2>
+  <p class="sub">实际流通量（DefiLlama 官方 totalCirculatingUSD 汇总口径，面板不自行逐链相加，避免桥接映射代币重复计算）。7 日净变化由同口径端点相减得出。价格偏离 1 美元超过 0.3% 视为脱锚提示。</p>
+  <div class="grid">
+    <div class="card"><h3>USDT</h3><div class="num" style="font-size:24px;font-weight:800">$175.33B</div>
+      <p class="num" style="margin:4px 0 0;font-size:12.5px;color:var(--dim)">价格 $0.9992 · 1日 +0.01% · 7日 −0.87% · 30日 −4.44% · 7日净变化 −$1.53B</p></div>
+    <div class="card"><h3>USDC</h3><div class="num" style="font-size:24px;font-weight:800">$69.33B</div>
+      <p class="num" style="margin:4px 0 0;font-size:12.5px;color:var(--dim)">价格 $0.9998 · 1日 +0.06% · 7日 −1.72% · 30日 −4.69% · 7日净变化 −$1.21B</p></div>
+  </div>
+  <p class="sub num" style="margin-top:8px">合计 $244.66B · 7 日净变化 −$2.75B · 30 日净变化约 −$11.56B。两个币种价格均未触发脱锚提示。</p>
+
+  <h2 class="sec">指标口径</h2>
+  <ul class="tight" style="font-size:13.5px">
+    <li><b>OI（OKX BTC-USDT 永续，单一交易所）：</b>同时给出张数（1 张面值 0.01 BTC）、BTC 数量与美元名义价值三种口径。美元名义值会随价格机械变化，判断是否新增仓位以 BTC 口径为准。</li>
+    <li><b>资金费率（OKX）：</b>结算周期按合约实际时间戳动态读取（本快照为 8h）；严格区分已结算费率与预测费率，年化按实际周期换算（费率 × 24/周期小时 × 365）。</li>
+    <li><b>ETF 资金流（Farside）：</b>按美东交易日统计，通常于美股收盘后数小时发布；周末与假日没有新行，属「尚未发布」而非抓取失败。</li>
+    <li><b>事件后 1 小时收益：</b>按事件准确时刻取分钟线两端价格；分钟线未覆盖时用小时线并标「近似值」。原面板会把每次刷新拿到的分钟 / 小时线归档进自己的数据库，复盘只用归档计算。</li>
+    <li><b>FRED 宏观序列：</b>按各序列真实观测日期呈现（日频利率、周频资产负债表、月频 M2），发布滞后与修订以 FRED 为准。</li>
+    <li><b>刷新节奏（原面板）：</b>每日 08:00（北京时间）生成日报快照；打开页面时与使用中约每 3 分钟刷新行情（价格 / OI / 资金费率）。分享版为一次性快照，无任何刷新。</li>
+  </ul>
+</section>
+
+<!-- ============ 事件 ============ -->
+<section class="page" id="page-events">
+  <h2 class="sec">即将发生</h2>
+  <p class="sub">宏观日历来源：Faireconomy 日历（美元高影响项）。时间已换算为北京时间。原面板会在事件前 48 小时内自动保存事前市场快照（价格、OI、费率、情绪、利率与预期），修订只追加版本、不覆盖；分享版只列日历，不保存快照。</p>
+  <div class="ev">
+    <h3>美联储主席 Warsh 讲话</h3>
+    <p class="t num">2026-11-17 01:00（北京时间）· 货币政策 · 未公布</p>
+    <p style="margin:6px 0 0;font-size:13.5px">无预期 / 前值（讲话类事件）。关注点：对当前 3.88% 联邦基金利率与 5.10% 的 10 年期收益率组合的表态，以及是否提及资产负债表。</p>
+  </div>
+  <div class="ev">
+    <h3>美国零售销售（月率）· 核心零售销售（月率）</h3>
+    <p class="t num">2026-11-17 21:30（北京时间）· 宏观数据 · 未公布</p>
+    <p class="num" style="margin:6px 0 0;font-size:13.5px">预期 0.2% · 前值 0.8% &nbsp;|&nbsp; 核心：预期 0.4% · 前值 0.9%</p>
+    <p style="margin:4px 0 0;font-size:13.5px">预期明显低于前值——公布值与预期的差、以及 BTC 在公布后 1 小时 / 24 小时的反应，原面板会按事件准确时刻用归档分钟线计算并记录。</p>
+  </div>
+  <div class="ev">
+    <h3>FOMC 会议纪要</h3>
+    <p class="t num">2026-11-19 03:00（北京时间）· 货币政策 · 未公布</p>
+    <p style="margin:6px 0 0;font-size:13.5px">无预期 / 前值（纪要类事件）。关注点：委员们对后续利率路径与缩表的分歧程度；与 FedWatch 隐含预期对照看。</p>
+  </div>
+
+  <h2 class="sec">历史案例怎么积累</h2>
+  <ul class="tight" style="font-size:13.5px">
+    <li>宏观事件由日历自动同步（CPI / PCE / 非农 / FOMC 等，含预期与前值）；监管、安全事故、机构买卖、地缘事件在原面板手工建卡。</li>
+    <li>每张事件卡记录：预期、实际、前值与修订、预期差、事前判断（可附 1–5 信心程度与判断失效条件）、BTC 事后 1h / 24h / 3d / 7d 反应、24h 最大回撤、同期美元 / 利率 / 纳指 / 黄金变化，以及复盘结论与「还有哪些解释（含反例）」。</li>
+    <li>事前快照版本化：事件前 48 小时内每日刷新自动保存一份，手动也可保存；事后修订事前字段只追加新版本，原版本保留——避免用事后信息改写事前判断。</li>
+    <li>分享版不带历史事件卡与复盘内容：那些是持续积累的个人记录，只在原面板里。</li>
+  </ul>
+</section>
+
+<!-- ============ 复盘与部署 ============ -->
+<section class="page" id="page-review">
+  <h2 class="sec">观察与复盘机制（原面板）</h2>
+  <ul class="tight" style="font-size:13.5px">
+    <li><b>每日观察：</b>每天先写下自己的判断（发生了什么、主要驱动、接下来观察），再展开系统基于当日数据的整理（已确认事实 / 可能解释 / 相互矛盾的证据）。系统解释只用已抓取数据，不给买卖建议。</li>
+    <li><b>每周复盘：</b>回看本周判断与实际走势的偏差、事件卡的复盘结论是否成立。</li>
+    <li><b>数据可信规则：</b>来源状态分五种（正常 / 部分更新 / 尚未发布 / 抓取失败沿用旧值 / 缺失）；过期模块保留最后已知值并标注，不参与「今日变化」的判断；季度数据沿用上次发布值时标明所属季度。</li>
+    <li><b>导出与备份：</b>原面板的复盘页可导出全部个人记录（定投计划与账本、每日 / 每周复盘、事件卡与全部快照版本、FedWatch 手动读数、行动计划）为 JSON，另有定投账本 CSV——记录不只存在浏览器里。</li>
+  </ul>
+  <div class="note warn"><b>分享版没有以上任何记录。</b>它只有上方各页展示的这一刻的公开市场数据快照；你的账本、判断、快照与计划都没有被复制到这个页面里。</div>
+
+  <h2 class="sec">把这一页放到 GitHub Pages（固定外部网址）</h2>
+  <p>本页是一个自包含的单文件（样式与脚本全在文件内，无外部依赖），这正是 GitHub Pages 需要的形态。步骤：</p>
+  <ol class="tight" style="font-size:14px">
+    <li>点下方按钮，把本页下载为 <code>index.html</code>。</li>
+    <li>在 GitHub 新建一个<b>公开仓库</b>（仓库名例如 <code>btc-panel</code>，可自定；免费账号的私有仓库开不了公开 Pages）。</li>
+    <li>把 <code>index.html</code> 上传到仓库根目录（网页端 Add file → Upload files，或用 git 推送，命令见下）。</li>
+    <li>仓库 Settings → Pages → Build and deployment 选 <b>Deploy from a branch</b>，分支选 <code>main</code>、目录选 <code>/ (root)</code>，保存。</li>
+    <li>约一分钟后，固定网址生效：<code>https://&lt;你的用户名&gt;.github.io/&lt;仓库名&gt;/</code>——之后每次更新只需替换仓库里的 <code>index.html</code>，网址不变。</li>
+  </ol>
+  <pre><code>git clone https://github.com/&lt;你的用户名&gt;/btc-panel.git
+# 把下载的 index.html 放进 btc-panel 文件夹后：
+cd btc-panel
+git add index.html
+git commit -m "BTC 面板分享版快照 2026-11-16"
+git push</code></pre>
+  <p style="margin-top:14px">
+    <button class="btn" id="btn-download" type="button">下载本页为 index.html</button>
+    <span id="dl-msg" style="margin-left:10px;font-size:12.5px;color:var(--dim)"></span>
+  </p>
+  <p class="sub">提醒：放到公开仓库后，任何人打开网址都能看到本页内容——本页只有公开市场数据、不含个人记录，可以公开；但以后重新生成分享版时，请先确认新快照里同样没有带入账本或判断记录。</p>
+</section>
+
+<footer>
+  BTC 面板（分享版）· 静态快照，生成于 2026-11-16 12:10（北京时间）· 数据来源：Kraken、OKX、Farside、DefiLlama、FRED、Yahoo、Alternative.me、BIS、ECB、日本银行、中国人民银行、Faireconomy · 本页不构成投资建议。
+</footer>
+</main>
+
+<script>
+(function(){
+  // ---- tabs ----
+  var btns = document.querySelectorAll('nav.tabs button[data-tab]');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){ x.setAttribute('aria-selected','false'); });
+      b.setAttribute('aria-selected','true');
+      document.querySelectorAll('section.page').forEach(function(s){ s.classList.remove('active'); });
+      var el = document.getElementById('page-' + b.getAttribute('data-tab'));
+      if (el) el.classList.add('active');
+      window.scrollTo({ top: 0 });
+    });
+  });
+
+  // ---- helpers ----
+  function el(tag, attrs){
+    var e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function fmtK(v){ return '$' + (v/1000).toFixed(0) + 'k'; }
+
+  // ---- price line chart (180 daily closes, baked at build time) ----
+  var closes = [77549.7,75456.5,76670.1,76984.9,77265.9,75824.0,74337.1,73515.7,73370.7,73753.7,73570.0,71317.5,66669.7,64035.8,63814.0,61037.9,60855.7,63307.6,63076.4,61690.4,61464.4,63552.3,63543.2,64404.0,65715.1,66284.3,65609.5,64454.8,62885.6,63486.4,64250.1,63234.0,63953.6,62650.3,60980.8,59707.1,60009.2,59941.5,59489.5,60157.3,58531.9,59959.4,61484.4,62546.8,63085.8,63593.0,64005.1,63304.0,62241.1,63174.0,64126.4,63779.5,63737.4,62253.5,64977.2,64709.4,63789.5,63907.0,64796.7,64678.1,65215.7,66511.7,66072.5,65050.1,64087.8,64312.9,65336.6,63697.1,63859.6,63901.0,64723.0,62822.0,62760.0,63500.0,63461.7,64053.7,64599.2,64259.2,64886.1,64901.1,64860.0,63922.1,63541.1,63412.0,63423.3,62979.4,63024.3,62819.1,64471.7,64677.2,69285.0,73001.1,78327.2,77082.6,77737.5,78966.1,78509.4,79008.6,80265.9,77841.8,78227.8,77681.6,78566.1,77398.1,77305.1,81276.1,79676.4,79828.4,80334.3,79090.3,78449.6,78288.6,76542.0,77210.9,77264.9,76800.2,78193.1,75585.1,76146.1,76354.8,80878.1,81226.5,81164.0,86593.8,86196.7,84384.6,84380.0,84090.5,84426.7,84444.2,83462.7,83633.4,83564.7,84849.1,84503.7,84740.0,86510.4,85751.5,85542.1,83276.1,81683.8,82559.4,82912.7,83675.6,81737.1,83101.2,81576.4,82133.7,81500.8,81382.0,82001.7,81843.7,82936.1,84022.5,81315.9,81086.2,80771.9,80048.5,80001.9,80800.9,81287.1,77800.0,77204.3,77437.0,78239.2,76675.8,77331.7,80440.8,75979.9,75741.6,75753.9,74737.9,75253.1,73700.3,73928.4,71370.7,68235.9,64115.1,65314.6,64823.5];
+  (function(){
+    var box = document.getElementById('chart-price'); if(!box) return;
+    var W=820,H=240,P={l:52,r:8,t:10,b:22};
+    var min=Math.min.apply(null,closes), max=Math.max.apply(null,closes);
+    var pad=(max-min)*0.06; min-=pad; max+=pad;
+    var X=function(i){ return P.l + (W-P.l-P.r)*i/(closes.length-1); };
+    var Y=function(v){ return P.t + (H-P.t-P.b)*(1-(v-min)/(max-min)); };
+    var svg = el('svg',{viewBox:'0 0 '+W+' '+H, role:'img','aria-label':'BTC 近 180 日收盘价走势图'});
+    for(var g=0; g<=3; g++){
+      var v = min + (max-min)*g/3, y = Y(v);
+      svg.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y,y2:y,stroke:'var(--border)','stroke-width':1}));
+      var t = el('text',{x:P.l-6,y:y+4,'text-anchor':'end','font-size':11,fill:'var(--dim)','class':'num'});
+      t.textContent = fmtK(v); svg.appendChild(t);
+    }
+    var maY = Y(72865.3);
+    var ma = el('line',{x1:P.l,x2:W-P.r,y1:maY,y2:maY,stroke:'var(--dim)','stroke-width':1,'stroke-dasharray':'5 4'});
+    svg.appendChild(ma);
+    var d = closes.map(function(v,i){ return (i===0?'M':'L') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1); }).join(' ');
+    svg.appendChild(el('path',{d:d, fill:'none', stroke:'var(--accent)','stroke-width':1.8}));
+    var last = el('circle',{cx:X(closes.length-1), cy:Y(closes[closes.length-1]), r:3.5, fill:'var(--accent)'});
+    svg.appendChild(last);
+    var labels=[['2026-05-21',0],['2026-08',60],['2026-10',130],['2026-11-16',closes.length-1]];
+    labels.forEach(function(pair){
+      var t = el('text',{x:X(pair[1]), y:H-6, 'text-anchor': pair[1]===0?'start':(pair[1]===closes.length-1?'end':'middle'), 'font-size':11, fill:'var(--dim)'});
+      t.textContent = pair[0]; svg.appendChild(t);
+    });
+    box.appendChild(svg);
+  })();
+
+  // ---- ETF bars (last 30 trading days, $M, baked at build time) ----
+  var etf = [102.7,189.9,-89.8,118.8,-484.9,-244.1,21.1,-65.4,175.7,-261.4,5.1,-82.4,526.7,23.2,524.8,-635.6,-137.9,110.3,176.0,137.3,17.2,-643.2,-398.6,-115.6,74.6,-430.2,-411.9,-201.0,-95.0,-299.8,-284.1,-185.4];
+  (function(){
+    var box = document.getElementById('chart-etf'); if(!box) return;
+    var data = etf.slice(-30);
+    var W=820,H=200,P={l:52,r:8,t:8,b:22};
+    var max=700;
+    var Y=function(v){ return P.t + (H-P.t-P.b)*(1-(v+max)/(2*max)); };
+    var zero=Y(0);
+    var svg = el('svg',{viewBox:'0 0 '+W+' '+H, role:'img','aria-label':'ETF 每日净流入柱状图'});
+    [-500,0,500].forEach(function(v){
+      var y=Y(v);
+      svg.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y,y2:y,stroke: v===0?'var(--border-strong)':'var(--border)','stroke-width':1}));
+      var t=el('text',{x:P.l-6,y:y+4,'text-anchor':'end','font-size':11,fill:'var(--dim)','class':'num'});
+      t.textContent = (v>0?'+':'')+v; svg.appendChild(t);
+    });
+    var bw=(W-P.l-P.r)/data.length;
+    data.forEach(function(v,i){
+      var y=Y(v), h=Math.abs(y-zero);
+      svg.appendChild(el('rect',{x:P.l+i*bw+1.5, y: v>=0?y:zero, width:Math.max(bw-3,2), height:Math.max(h,1),
+        fill: v>=0?'var(--up)':'var(--down)', opacity:0.85}));
+    });
+    var t1=el('text',{x:P.l,y:H-6,'font-size':11,fill:'var(--dim)'}); t1.textContent='2026-10 初'; svg.appendChild(t1);
+    var t2=el('text',{x:W-P.r,y:H-6,'text-anchor':'end','font-size':11,fill:'var(--dim)'}); t2.textContent='2026-11-13'; svg.appendChild(t2);
+    box.appendChild(svg);
+  })();
+
+  // ---- download this page as index.html (for GitHub upload) ----
+  var btn = document.getElementById('btn-download');
+  if (btn) btn.addEventListener('click', function(){
+    var html = '<!doctype html>\n' + document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'index.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    var msg = document.getElementById('dl-msg');
+    if (msg) msg.textContent = '已下载 index.html，按上方步骤上传到 GitHub 仓库根目录即可。';
+  });
+})();
+</script>
+</body>
+</html>
