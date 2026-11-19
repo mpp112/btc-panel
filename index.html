@@ -106,6 +106,25 @@
   .fact{font-size:11px;border:1px solid var(--up);color:var(--up);border-radius:99px;padding:0 7px}
   .maybe{font-size:11px;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:0 7px}
   .insuff{font-size:11px;border:1px solid var(--dim);color:var(--dim);border-radius:99px;padding:0 7px}
+  /* history library page */
+  .filters{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin:12px 0 4px}
+  .filters label{display:block;font-size:12px;color:var(--dim);margin-bottom:3px}
+  .filters select{font:inherit;font-size:14px;color:var(--text);background:var(--surface);
+    border:1px solid var(--border-strong);border-radius:8px;padding:7px 10px;min-height:40px;max-width:100%}
+  .evhead{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+  .evhead .date{font-size:12.5px;color:var(--dim);font-weight:700}
+  .badge{font-size:11px;border:1px solid var(--border-strong);border-radius:99px;padding:0 8px;color:var(--dim);white-space:nowrap}
+  .badge.hot{border-color:var(--accent);color:var(--accent);font-weight:600}
+  .evgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-top:10px}
+  @media(min-width:640px){.evgrid{grid-template-columns:repeat(3,1fr)}}
+  .evgrid .cell label{display:block;font-size:11.5px;color:var(--dim)}
+  .evgrid .cell .v{font-size:15.5px;font-weight:700;line-height:1.3}
+  .evsec{font-size:12px;color:var(--dim);font-weight:700;margin:12px 0 0;letter-spacing:.02em}
+  .lesson{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:var(--surface);margin-bottom:10px;box-shadow:var(--shadow)}
+  .lesson h3{margin:0 0 4px;font-size:14.5px}
+  .lesson p{margin:3px 0;font-size:13.5px}
+  .lesson .falsify{font-size:13px;color:var(--dim)}
+  .lesson .falsify b{color:var(--text)}
 </style>
 </head>
 <body>
@@ -113,7 +132,7 @@
 <header class="banner">
   <div class="wrap">
     <h1>BTC 每日观察 · 分享版<span class="tag">静态快照 · 非实时行情</span></h1>
-    <p>版本：<b>分享版 v2.2（2026-11-16 修订：均线附可复算计算记录、稳定币改用原始观测、事件案例同口径核验、补真实历史图）</b> · 公开链接：https://mpp112.github.io/btc-panel/<br>
+    <p>版本：<b>分享版 v2.3（2026-11-19 新增「历史事件库」页：32 个历史事件，数据截止 2026-11-18；其余各页仍为 v2.2 的 2026-11-16 快照，未改动）</b> · 公开链接：https://mpp112.github.io/btc-panel/<br>
     快照生成时间：<b class="num">2026-11-16 12:10（北京时间）</b><span id="snapshot-age"></span> · 观察日 2026-11-16（北京时间 08:00 切日）。
     本页是原 BTC 面板在这一刻的完整数据快照，可固定放在 GitHub Pages 上用外部网址打开；
     它<b>不会自动更新、不能保存任何记录</b>——定投账本、事件快照、每日复盘都只在原面板里。原面板有新数据时，需要重新生成一次本页。</p>
@@ -127,6 +146,7 @@
     <button role="tab" aria-selected="false" data-tab="plans">行动计划</button>
     <button role="tab" aria-selected="false" data-tab="liquidity">全球流动性</button>
     <button role="tab" aria-selected="false" data-tab="events">事件与历史案例</button>
+    <button role="tab" aria-selected="false" data-tab="history">历史事件库</button>
     <button role="tab" aria-selected="false" data-tab="review">复盘与帮助</button>
   </div>
 </nav>
@@ -879,6 +899,90 @@
   </ul>
 </section>
 
+<!-- ============ 历史事件库 ============ -->
+<section class="page" id="page-history">
+  <h2 class="sec">历史事件库 · 条件—反应（不是 K 线形态库）</h2>
+  <p class="sub">32 个事件，2011-06-19 至 2025-10-06。每个事件固定记录同一套字段：事前状态（涨多了还是跌多了、离均线与高点多远、波动率）、事后 +7 / +30 / +90 / +180 天收益与 +90 天内最大回撤 / 最大涨幅，再与「随便一天买入」的基准对照。学的是条件与反应，不是图形。</p>
+  <div class="note warn"><b>静态快照，不是实时行情。</b>本页是分享版快照的一部分：事件数据截止 <b>2026-11-18</b>，于 <b>2026-11-19 14:02（北京时间）</b>接入本页<span id="history-age"></span>。价格与收益在生成时已经固定，打开越晚越旧，不会自动更新。个人记录（定投账本、事前判断、复盘）默认不公开，本页不含任何个人记录。</div>
+
+  <h2 class="sec">方法与口径</h2>
+  <ul class="tight" style="font-size:13.5px">
+    <li><b>价格来源：</b>CoinMetrics PriceUSD 日收盘，2010-07-18 起共 5,968 天。所有收益均为<b>收盘价对收盘价</b>：事后 +N 天收益 = 事件日后第 N 天收盘 ÷ 事件日收盘 − 1；事前涨幅同理向前取。盘中公告、周末事件会有约 1 天误差，属近似。</li>
+    <li><b>事前状态口径：</b>「vs 200 日均线」= 事件日收盘 ÷ 事件日前 200 日均线 − 1；「vs 历史高点」= 事件日收盘 ÷ 此前最高日收盘 − 1；「30 天波动率」= 事件日前 30 天日收益的标准差。均为价格代理指标。</li>
+    <li><b>未接入（不估算）：</b>MVRV / 实现价格的历史全量在免费 CoinMetrics 接口为付费口径，<b>未接入</b>，本页任何事件卡都不给出这两个数，只用上面的价格代理。缺失字段一律标「缺失」，不补零、不估算。</li>
+    <li><b>样本警告：</b>32 个事件为事后挑选，有生存者偏差；每类只有 1–4 个样本，下面的分组数字与教训都是<b>提示，不是证明</b>。事件常成簇出现（2021-05、2022-05/06、2024-01/04），+90 天窗口会重叠，归因会互相污染。2011–2013 年市场极薄，涨跌幅不能直接套用到现在。</li>
+    <li><b>以后怎么加新事件：</b>新事件按同一套字段（日期、类型、突发/预期内、事前状态、事后四档收益、+90 天回撤/涨幅）追加进本页数据，与旧事件同口径计算后再发布新快照；不改旧事件的数值。</li>
+  </ul>
+
+  <h2 class="sec">基准对照 · 「随便一天买入」</h2>
+  <p class="sub">对照组不是 0%。事件收益只有跑赢同年代基准才有信息量；全部历史基准被早期大牛市拉高，不能拿它直接比近年的事件。</p>
+  <div class="grid c3">
+    <div class="stat"><label>2018–2026 基准（与近年事件可比）</label><div class="v num">+90 天中位 +2.9%</div><div class="f num">+180 天中位 +12.4% · 随便一天买入持有</div></div>
+    <div class="stat"><label>2010–2026 基准（全历史）</label><div class="v num">+90 天中位 +13.5%</div><div class="f num">+180 天中位 +35.6% · 被早期牛市拉高，<b>不能直接比</b></div></div>
+    <div class="stat"><label>分时代补充</label><div class="v num" style="font-size:15px">2020 后 +7.2% · 2022 后 +2.3%</div><div class="f num">均为 +90 天中位；越靠近现在，基准越低</div></div>
+  </div>
+  <div class="grid c3" style="margin-top:12px">
+    <div class="stat"><label>突发事件（n=20）</label><div class="v num">+90 天中位 +22.6%</div><div class="f">方差极大：既有 COVID +99.4%，也有 2011 年 Mt Gox −72.7%</div></div>
+    <div class="stat"><label>预期内事件（n=11）</label><div class="v num">+90 天中位 +2.8%</div><div class="f">与 2018 后基准 +2.9% 几乎相同——基本已被 price in</div></div>
+    <div class="stat"><label>事后确认（n=1）</label><div class="v num">+90 天 −26.8%</div><div class="f">2025-10-06 历史高点收盘，属标记点而非可提前知道的事件</div></div>
+  </div>
+  <details class="srcbox"><summary>来源与计算 · 基准与分组</summary>
+    <p>基准：对 CoinMetrics 日收盘全序列逐日计算「当日收盘 → +90 / +180 天收盘」的收益，再按年代窗口取中位数（2010-07-18 起，5,968 天）。分组中位：按本页 32 个事件的类型 / 预期性分组，对各组 +90 天收益取中位数。收益全部收盘价对收盘价。事件原始表与计算说明：event_library.csv / event-library-report.md（2026-11-19 验证版，数据截止 2026-11-18）。</p>
+  </details>
+
+  <h2 class="sec">事件列表（32 个）</h2>
+  <div class="filters">
+    <div><label for="f-type">按类型筛选</label><select id="f-type"></select></div>
+    <div><label for="f-surp">按突发 / 预期内筛选</label><select id="f-surp">
+      <option value="">全部（突发 + 预期内 + 事后确认）</option>
+      <option value="突发">突发</option>
+      <option value="预期内">预期内</option>
+      <option value="事后确认">事后确认</option>
+    </select></div>
+    <div><label for="f-sort">排序</label><select id="f-sort">
+      <option value="date-desc">日期 · 新 → 旧</option>
+      <option value="date-asc">日期 · 旧 → 新</option>
+      <option value="p90-desc">+90 天收益 · 高 → 低</option>
+      <option value="p90-asc">+90 天收益 · 低 → 高</option>
+    </select></div>
+  </div>
+  <p class="sub num" id="ev-count" style="margin-top:2px"></p>
+  <div id="ev-list"></div>
+  <p class="src">每张卡来源：CoinMetrics PriceUSD 日收盘 · 收益与事前状态均为收盘价对收盘价计算 · MVRV / 实现价格历史：未接入（见上方口径）· 字段缺失时显示「缺失」。</p>
+
+  <h2 class="sec">7 条可证伪教训</h2>
+  <p class="sub">每条都写了证伪条件：下次出现相反证据，就改规则，而不是改记忆。样本均为小样本提示（每类 1–4 个）。</p>
+  <div class="lesson"><h3>1 · 孤立被黑 ≠ 传染</h3>
+    <p>单一交易所出事、没有连环杠杆时，+90 天多半收复：危机/交易所 4 例中位 +17.4%、胜率 75%（Mt Gox 2014 +5.7%、Bitfinex 2016 +32.6%、FTX 2022 +29.0%；唯一例外是 2011 年 Mt Gox，当时事前 30 天已涨 +211.7%）。一旦变成传染（稳定币脱锚 + 借贷平台冻结），Terra −34.5%、Celsius −19.1%，+90 天胜率 0%。</p>
+    <p class="falsify"><b>证伪条件：</b>下次出现第二家借贷平台冻结提款，就不能再按「孤立事件」处理；若某次传染链事件 +90 天仍收复为正，本条的「传染必跌」即被证伪。</p></div>
+  <div class="lesson"><h3>2 · 中国禁令越禁越没用</h3>
+    <p>4 次中国禁令的 +90 天：2013 年 −34.8%，2017 年 +156.3%，2021 年两次 +18.8% / +18.5%，中位 +18.6%、胜率 75%。重复叙事不值得卖出。</p>
+    <p class="falsify"><b>证伪条件：</b>下次禁令伴随算力 / 交易所实质关停且 30 天未恢复，或 +90 天跌幅超过 −35%（深于第一次），本条失效。</p></div>
+  <div class="lesson"><h3>3 · 减半不是买入信号，只是弱供给时钟</h3>
+    <p>4 次减半 +90 天中位 +19.4%，但全靠第一次（+152.6%）拉动；第 4 次只有 +2.8%、+180 天 +3.7%。减半前已创新高时，减半本身没有增量信息。</p>
+    <p class="falsify"><b>证伪条件：</b>第 5 次减半（约 2028 年）后 180 天收益仍 &gt; +60%，则「减半效应已失效」被证伪，需要重新评估。</p></div>
+  <div class="lesson"><h3>4 · ETF 是「申请 &gt; 批准」</h3>
+    <p>贝莱德申请日（2023-06-15）+30 天 +18.5%；批准日（2024-01-10）+30 天只有 +0.8%、+7 天 −8.8%，+90 天才 +47.5%。批准日追高是 sell the news，应等回踩或资金流确认。</p>
+    <p class="falsify"><b>证伪条件：</b>下一次同类「申请 → 批准」事件中，批准日 +30 天收益明显高于申请日 +30 天，本条失效。</p></div>
+  <div class="lesson"><h3>5 · 流动性恐慌的低点，关键看政策回应</h3>
+    <p>COVID（事前 30 天 −51.7% → +90 天 +99.4%）、SVB（+31.0%）、关税低点（+37.5%）三次的共同点是事前已大跌、事后有放水 / 兜底 / 政策转向。没有政策回应时，不要抄恐慌。</p>
+    <p class="falsify"><b>证伪条件：</b>下一次流动性恐慌低点后没有任何政策回应、+90 天仍大幅收复（如 &gt; +30%），则「政策回应是必要条件」被证伪。</p></div>
+  <div class="lesson"><h3>6 · 主流里程碑 = 顶的警报</h3>
+    <p>CME 期货上线 +90 天 −59.1%，Coinbase 上市 −48.1%。两者事前都满足：价格高于 200 日均线 +264% / +94%、距历史高点仅 −2.0% / −0.9%。符合「抛物线 + 里程碑 + 极度乐观」时，减仓而不是加仓。</p>
+    <p class="falsify"><b>证伪条件：</b>下一次里程碑事件同时满足上述极端事前状态、+90 天仍继续大涨为正，本条失效。</p></div>
+  <div class="lesson"><h3>7 · 先问涨多了还是跌多了，再问是什么事件</h3>
+    <p>事前涨幅极端的事件，事后几乎都不好：2011 Mt Gox（事前 30 天 +211.7% → +90 天 −72.7%）、2013-04 顶（+233.9% → −53.5%）、2013-12 禁令（+321.7% → −34.8%）、2017 CME（+149.1% → −59.1%）。反过来，事前已跌 −51.7% 的 COVID，+90 天 +99.4%。预期内事件 +90 天中位只有 +2.8%，突发为 +22.6% 但方差极大。</p>
+    <p class="falsify"><b>证伪条件：</b>下一次事前 30 天涨幅 &gt; +200% 的事件，+90 天为正且跑赢同期基准，本条失效。</p></div>
+
+  <h2 class="sec">下次大事件来了，怎么用这张表</h2>
+  <ol class="tight" style="font-size:13.5px">
+    <li>先分类：供给 / 需求 / 监管 / 危机（孤立还是传染）/ 宏观流动性 / 市场结构。</li>
+    <li>再看事前状态：30 天涨幅、vs 200 日均线、距高点回撤、30 天波动率。抛物线 + 里程碑 = 警惕；深跌 + 政策回应 = 关注。</li>
+    <li>再看预期性：预期内的事 +90 天中位只有 +2.8%，不要为它追高；突发的事中位 +22.6%，但方差极大。</li>
+    <li>写下判断和证伪条件，90 天后回来复盘——复盘记录只在原面板里，本分享版不保存。</li>
+  </ol>
+</section>
+
 <!-- ============ 复盘与部署 ============ -->
 <section class="page" id="page-review">
   <h2 class="sec">观察与复盘机制（原面板）</h2>
@@ -939,7 +1043,7 @@ git push</code></pre>
 </section>
 
 <footer>
-  BTC 面板（分享版 v2.2）· 静态快照，生成于 2026-11-16 12:10（北京时间）· 公开链接 https://mpp112.github.io/btc-panel/（以仓库 index.html 更新为准）· 数据来源：Kraken、OKX、Farside、DefiLlama、FRED、Yahoo、Alternative.me、BIS、ECB、日本银行、中国人民银行、Faireconomy；事件页历史案例另用 BLS 发布与 Coinbase 分钟线 · 本页不构成投资建议。
+  BTC 面板（分享版 v2.3）· 静态快照：市场数据生成于 2026-11-16 12:10（北京时间），历史事件库数据截止 2026-11-18、于 2026-11-19 接入 · 公开链接 https://mpp112.github.io/btc-panel/（以仓库 index.html 更新为准）· 数据来源：Kraken、OKX、Farside、DefiLlama、FRED、Yahoo、Alternative.me、BIS、ECB、日本银行、中国人民银行、Faireconomy；事件页历史案例另用 BLS 发布与 Coinbase 分钟线；历史事件库用 CoinMetrics PriceUSD 日收盘 · 本页不构成投资建议。
 </footer>
 </main>
 
@@ -1157,6 +1261,130 @@ git push</code></pre>
     var t1=el('text',{x:P.l,y:H-6,'font-size':11,fill:'var(--dim)'}); t1.textContent='2021-11 起始周'; svg.appendChild(t1);
     var t2=el('text',{x:W-P.r,y:H-6,'text-anchor':'end','font-size':11,fill:'var(--dim)'}); t2.textContent='2026-11-05 起始周'; svg.appendChild(t2);
     box.appendChild(svg);
+  })();
+
+  // ---- history library: 32 events (CoinMetrics PriceUSD daily closes, close-to-close) ----
+  // Fields: d date, n name, t type, s surprise class (突发/预期内/事后确认), sr raw surprise label,
+  // note, p event-day close, ma vs 200d MA %, ath vs prior ATH %, vol 30d vol %,
+  // m30/m7 pre returns %, p7/p30/p90/p180 post returns %, dd max drawdown +90d %, mg max gain +90d %.
+  // New events: append one object with the same fields and the same calculation basis.
+  var EVENTS = [
+    {d:"2011-06-19", n:"Mt Gox 首次被黑，价格闪崩至 $0.01", t:"危机/交易所", s:"突发", sr:"突发", note:"首个大交易所被黑，流动性极薄", p:17.51, ma:435.7, ath:-39.7, vol:83.0, m30:211.7, m7:-7.1, p7:-6.6, p30:-21.0, p90:-72.7, p180:-81.7, dd:-72.9, mg:0.0},
+    {d:"2012-11-28", n:"减半 1：50→25 BTC", t:"供给/减半", s:"预期内", sr:"预期内", note:"第一次减半，市场极小", p:12.33, ma:30.2, ath:-57.5, vol:10.1, m30:16.0, m7:5.1, p7:8.0, p30:9.1, p90:152.6, p180:924.9, dd:0.0, mg:152.6},
+    {d:"2013-04-10", n:"牛市顶 $266 后闪崩，Mt Gox 交易暂停", t:"危机/市场结构", s:"突发", sr:"突发", note:"塞浦路斯救助引发的投机顶", p:161.19, ma:462.1, ath:-30.1, vol:55.5, m30:233.9, m7:22.7, p7:-42.4, p30:-27.0, p90:-53.5, p180:-23.1, dd:-58.8, mg:0.0},
+    {d:"2013-12-05", n:"中国央行禁金融机构碰 BTC", t:"监管", s:"突发", sr:"突发", note:"第一次中国禁令", p:1027.41, ma:405.5, ath:-9.5, vol:51.8, m30:321.7, m7:2.0, p7:-15.0, p30:-19.4, p90:-34.8, p180:-34.6, dd:-48.8, mg:0.0},
+    {d:"2014-02-24", n:"Mt Gox 破产，85 万 BTC 失踪", t:"危机/交易所", s:"突发", sr:"突发（2/7 已停提，有前兆）", note:"当时最大交易所倒闭", p:542.27, ma:16.0, ath:-52.2, vol:24.8, m30:-32.6, m7:-14.1, p7:24.8, p30:6.8, p90:5.7, p180:-8.3, dd:-32.3, mg:24.8},
+    {d:"2016-07-09", n:"减半 2：25→12.5 BTC", t:"供给/减半", s:"预期内", sr:"预期内", note:"", p:651.94, ma:38.8, ath:-42.6, vol:27.7, m30:13.0, m7:-7.2, p7:2.0, p30:-9.3, p90:-5.2, p180:53.5, dd:-19.2, mg:4.5},
+    {d:"2016-08-02", n:"Bitfinex 被黑 119,756 BTC", t:"危机/交易所", s:"突发", sr:"突发", note:"", p:526.98, ma:6.3, ath:-53.6, vol:17.7, m30:-20.5, m7:-19.5, p7:11.6, p30:8.6, p90:32.6, p180:73.8, dd:0.0, mg:35.8},
+    {d:"2017-08-01", n:"比特币现金 BCH 硬分叉", t:"协议/分叉", s:"预期内", sr:"预期内", note:"扩容之争", p:2727.39, ma:62.8, ath:-8.3, vol:35.8, m30:8.3, m7:6.6, p7:25.6, p30:73.8, p90:124.4, p180:325.9, dd:-1.4, mg:126.4},
+    {d:"2017-09-04", n:"中国禁 ICO、关交易所", t:"监管", s:"突发", sr:"突发", note:"", p:4374.75, ma:99.5, ath:-11.0, vol:19.2, m30:35.1, m7:-0.1, p7:-3.7, p30:-3.6, p90:156.3, p180:161.2, dd:-25.8, mg:156.3},
+    {d:"2017-12-17", n:"CME 期货上线（同日见顶 $19,641）", t:"市场结构", s:"预期内", sr:"预期内", note:"期货上线常被当作顶的信号", p:19250.47, ma:264.3, ath:-2.0, vol:32.1, m30:149.1, m7:24.4, p7:-27.1, p30:-40.6, p90:-59.1, p180:-66.8, dd:-64.4, mg:0.0},
+    {d:"2020-03-12", n:"COVID 黑色星期四，单日 -40%+", t:"宏观/流动性", s:"突发", sr:"突发", note:"全球流动性恐慌", p:4959.31, ma:-42.5, ath:-74.7, vol:49.1, m30:-51.7, m7:-45.3, p7:25.1, p30:38.8, p90:99.4, p180:103.8, dd:0.0, mg:105.7},
+    {d:"2020-05-11", n:"减半 3：12.5→6.25 BTC", t:"供给/减半", s:"预期内", sr:"预期内", note:"", p:8591.65, ma:6.8, ath:-56.3, vol:21.6, m30:24.8, m7:-3.3, p7:13.2, p30:15.1, p90:36.0, p180:73.0, dd:0.0, mg:37.3},
+    {d:"2020-10-21", n:"PayPal 宣布支持加密", t:"需求/采用", s:"突发", sr:"突发", note:"主流支付入场", p:12848.49, ma:30.1, ath:-34.6, vol:10.6, m30:22.9, m7:12.5, p7:3.4, p30:45.3, p90:182.1, p180:334.3, dd:0.0, mg:217.4},
+    {d:"2021-02-08", n:"特斯拉披露买 $15 亿 BTC", t:"需求/公司", s:"突发", sr:"突发", note:"", p:46121.93, ma:149.3, ath:13.1, vol:32.9, m30:14.2, m7:37.4, p7:4.3, p30:21.7, p90:26.4, p180:-3.5, dd:-2.3, mg:37.6},
+    {d:"2021-04-14", n:"Coinbase 纳斯达克直接上市", t:"需求/市场结构", s:"预期内", sr:"预期内", note:"上市日即局部顶 $64,800", p:62869.5, ma:93.5, ath:-0.9, vol:14.2, m30:12.0, m7:11.7, p7:-14.1, p30:-20.5, p90:-48.1, p180:-8.9, dd:-49.6, mg:0.6},
+    {d:"2021-05-12", n:"特斯拉暂停 BTC 支付（环保）", t:"需求/公司", s:"突发", sr:"突发", note:"", p:50972.36, ma:31.7, ath:-19.7, vol:23.2, m30:-14.9, m7:-11.1, p7:-26.2, p30:-27.0, p90:-10.8, p180:32.5, dd:-41.6, mg:0.0},
+    {d:"2021-05-19", n:"中国禁挖矿 + 519 暴跌", t:"监管", s:"突发", sr:"突发（5/18-21 政策集群）", note:"矿机出海，算力腰斩", p:37642.52, ma:-5.5, ath:-40.7, vol:25.7, m30:-32.5, m7:-26.2, p7:4.1, p30:-5.1, p90:18.8, p180:69.4, dd:-20.9, mg:26.8},
+    {d:"2021-09-07", n:"萨尔瓦多 BTC 法币生效", t:"需求/国家", s:"预期内", sr:"预期内（6/9 已立法）", note:"首个国家法币", p:46854.4, ma:1.7, ath:-26.2, vol:19.6, m30:6.6, m7:-0.8, p7:0.4, p30:14.8, p90:7.9, p180:-18.0, dd:-13.5, mg:44.2},
+    {d:"2021-09-24", n:"中国全面禁加密交易", t:"监管", s:"突发", sr:"突发（重复禁令）", note:"", p:42803.31, ma:-6.4, ath:-32.5, vol:22.2, m30:-12.7, m7:-9.3, p7:12.3, p30:42.2, p90:18.5, p180:-0.2, dd:-3.7, mg:57.8},
+    {d:"2022-03-16", n:"美联储首次加息（紧缩周期开始）", t:"宏观/流动性", s:"预期内", sr:"预期内", note:"加息周期起点", p:41101.77, ma:-15.5, ath:-39.1, vol:24.9, m30:-3.6, m7:-2.1, p7:4.0, p30:-1.4, p90:-46.3, p180:-45.6, dd:-46.3, mg:15.5},
+    {d:"2022-05-07", n:"Terra UST 脱锚开始", t:"危机/传染", s:"突发", sr:"突发", note:"算法稳定币死亡螺旋", p:35508.71, ma:-23.7, ath:-47.4, vol:16.4, m30:-18.5, m7:-5.8, p7:-15.4, p30:-11.8, p90:-34.5, p180:-43.1, dd:-46.5, mg:0.0},
+    {d:"2022-06-12", n:"Celsius 冻结提款", t:"危机/传染", s:"突发", sr:"突发", note:"Terra 传染第二环", p:26830.28, ma:-34.3, ath:-60.3, vol:18.8, m30:-8.4, m7:-10.3, p7:-23.6, p30:-27.9, p90:-19.1, p180:-36.1, dd:-29.8, mg:0.0},
+    {d:"2022-11-11", n:"FTX 破产申请", t:"危机/交易所", s:"突发", sr:"突发（11/6-11 挤兑）", note:"第二大交易所倒闭", p:16916.85, ma:-27.8, ath:-75.0, vol:24.4, m30:-11.7, m7:-20.0, p7:-1.5, p30:1.0, p90:29.0, p180:63.4, dd:-6.7, mg:40.5},
+    {d:"2023-03-10", n:"SVB 倒闭，USDC 脱锚至 $0.87", t:"宏观/危机", s:"突发", sr:"突发", note:"银行危机 + 稳定币脱锚", p:20240.41, ma:2.7, ath:-70.0, vol:15.2, m30:-11.8, m7:-9.4, p7:35.6, p30:40.1, p90:31.0, p180:27.2, dd:0.0, mg:50.5},
+    {d:"2023-06-15", n:"贝莱德提交现货 ETF 申请", t:"需求/ETF", s:"突发", sr:"突发", note:"最大资管入场信号", p:25559.14, ma:7.7, ath:-62.2, vol:11.9, m30:-5.4, m7:-3.6, p7:17.2, p30:18.5, p90:2.6, p180:62.2, dd:-1.7, mg:23.0},
+    {d:"2023-08-29", n:"灰度胜诉 SEC（法院推翻 ETF 拒绝）", t:"监管/ETF", s:"突发", sr:"突发", note:"ETF 获批概率大升", p:27672.22, ma:0.7, ath:-59.0, vol:10.8, m30:-5.4, m7:6.5, p7:-6.8, p30:-2.3, p90:34.5, p180:87.0, dd:-9.2, mg:36.7},
+    {d:"2024-01-10", n:"SEC 批准 11 只现货 ETF", t:"需求/ETF", s:"预期内", sr:"预期内（截止日已知，结果不确定）", note:"结构性需求拐点", p:46818.16, ma:42.9, ath:-30.7, vol:13.3, m30:13.6, m7:9.5, p7:-8.8, p30:0.8, p90:47.5, p180:21.1, dd:-15.5, mg:56.1},
+    {d:"2024-04-20", n:"减半 4：6.25→3.125 BTC", t:"供给/减半", s:"预期内", sr:"预期内", note:"减半前 38 天已创新高", p:64907.99, ma:37.1, ath:-11.2, vol:15.4, m30:-0.8, m7:0.6, p7:-2.3, p30:9.7, p90:2.8, p180:3.7, dd:-13.6, mg:9.7},
+    {d:"2024-11-06", n:"特朗普胜选结果确认", t:"宏观/政治", s:"突发", sr:"突发", note:"亲加密政策预期", p:75696.04, ma:19.1, ath:3.6, vol:13.6, m30:21.3, m7:4.5, p7:19.4, p30:32.0, p90:29.3, p180:25.3, dd:0.0, mg:40.2},
+    {d:"2025-01-23", n:"特朗普加密行政令 / 战略储备讨论", t:"宏观/政治", s:"预期内", sr:"预期内", note:"", p:104184.62, ma:37.5, ath:-1.8, vol:12.7, m30:5.6, m7:4.2, p7:0.8, p30:-7.3, p90:-10.1, p180:15.2, dd:-26.7, mg:0.8},
+    {d:"2025-04-07", n:"关税战暴跌低点", t:"宏观/流动性", s:"突发", sr:"突发（4/2 宣布）", note:"全球风险资产齐跌", p:79421.8, ma:-8.5, ath:-25.2, vol:15.4, m30:-7.8, m7:-3.7, p7:6.5, p30:22.3, p90:37.5, p180:54.1, dd:-3.9, mg:40.4},
+    {d:"2025-10-06", n:"历史高点收盘 $124,824", t:"价格/顶", s:"事后确认", sr:"事后确认", note:"日收盘顶，盘中 $126,198", p:124824.45, ma:17.9, ath:1.1, vol:7.8, m30:13.2, m7:9.2, p7:-7.6, p30:-16.8, p90:-26.8, p180:-46.1, dd:-32.1, mg:0.0}
+  ];
+  (function(){
+    var listEl = document.getElementById('ev-list'); if(!listEl) return;
+    var typeSel = document.getElementById('f-type'), surpSel = document.getElementById('f-surp'),
+        sortSel = document.getElementById('f-sort'), countEl = document.getElementById('ev-count');
+    var types = [];
+    EVENTS.forEach(function(e){ if(types.indexOf(e.t) < 0) types.push(e.t); });
+    types.sort();
+    var allOpt = document.createElement('option'); allOpt.value=''; allOpt.textContent='全部类型（17 类）';
+    typeSel.appendChild(allOpt);
+    types.forEach(function(t){
+      var n = EVENTS.filter(function(e){ return e.t===t; }).length;
+      var o = document.createElement('option'); o.value=t; o.textContent = t + '（' + n + '）';
+      typeSel.appendChild(o);
+    });
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function pct(v){
+      if (v === null || v === undefined) return '<span class="v num">缺失</span>';
+      var cls = v > 0 ? ' up' : (v < 0 ? ' down' : '');
+      return '<span class="v num' + cls + '">' + (v > 0 ? '+' : '') + v.toFixed(1) + '%</span>';
+    }
+    function plain(v, suffix){
+      if (v === null || v === undefined) return '<span class="v num">缺失</span>';
+      return '<span class="v num">' + v.toFixed(1) + suffix + '</span>';
+    }
+    function price(v){
+      if (v === null || v === undefined) return '<span class="v num">缺失</span>';
+      return '<span class="v num">$' + v.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + '</span>';
+    }
+    function cell(label, inner){ return '<div class="cell"><label>' + label + '</label>' + inner + '</div>'; }
+    function render(){
+      var tf = typeSel.value, sf = surpSel.value, so = sortSel.value;
+      var rows = EVENTS.filter(function(e){
+        return (!tf || e.t === tf) && (!sf || e.s === sf);
+      });
+      rows.sort(function(a, b){
+        if (so === 'date-asc') return a.d < b.d ? -1 : 1;
+        if (so === 'p90-desc') return b.p90 - a.p90;
+        if (so === 'p90-asc') return a.p90 - b.p90;
+        return a.d < b.d ? 1 : -1;
+      });
+      countEl.textContent = '显示 ' + rows.length + ' / ' + EVENTS.length + ' 个事件' +
+        (tf ? ' · 类型：' + tf : '') + (sf ? ' · ' + sf : '');
+      if (!rows.length){ listEl.innerHTML = '<div class="note">当前筛选下没有事件，换个类型或预期性试试。</div>'; return; }
+      listEl.innerHTML = rows.map(function(e){
+        var h = '<article class="ev"><div class="evhead"><span class="date num">' + e.d + '</span>' +
+          '<span class="badge">' + esc(e.t) + '</span>' +
+          '<span class="badge' + (e.s === '突发' ? ' hot' : '') + '">' + esc(e.sr) + '</span></div>' +
+          '<h3 style="margin-top:4px">' + esc(e.n) + '</h3>';
+        if (e.note) h += '<p style="margin:2px 0 0;font-size:13px;color:var(--dim)">' + esc(e.note) + '</p>';
+        h += '<div class="evgrid">' + cell('事件日收盘价（CoinMetrics 日收盘）', price(e.p)) + '</div>';
+        h += '<p class="evsec">事前状态（事件日，收盘价口径）</p><div class="evgrid">' +
+          cell('事前 30 天涨幅', pct(e.m30)) +
+          cell('事前 7 天涨幅', pct(e.m7)) +
+          cell('vs 200 日均线', pct(e.ma)) +
+          cell('vs 历史高点', pct(e.ath)) +
+          cell('30 天波动率（日收益标准差）', plain(e.vol, '%')) +
+          cell('MVRV / 实现价格历史', '<span class="v" style="font-size:13.5px">未接入</span>') +
+          '</div>';
+        h += '<p class="evsec">事后收益（收盘价对收盘价）</p><div class="evgrid">' +
+          cell('+7 天', pct(e.p7)) +
+          cell('+30 天', pct(e.p30)) +
+          cell('+90 天', pct(e.p90)) +
+          cell('+180 天', pct(e.p180)) +
+          cell('+90 天内最大回撤', pct(e.dd)) +
+          cell('+90 天内最大涨幅', pct(e.mg)) +
+          '</div></article>';
+        return h;
+      }).join('');
+    }
+    [typeSel, surpSel, sortSel].forEach(function(s){ s.addEventListener('change', render); });
+    render();
+  })();
+
+  // ---- history library snapshot age ----
+  (function(){
+    var elx = document.getElementById('history-age'); if(!elx) return;
+    var gen = new Date('2026-11-19T14:02:00+08:00').getTime();
+    function upd(){
+      var mins = Math.max(0, Math.floor((Date.now()-gen)/60000));
+      var txt = mins < 60 ? mins + ' 分钟' : (mins < 1440 ? Math.floor(mins/60) + ' 小时 ' + (mins%60) + ' 分钟' : Math.floor(mins/1440) + ' 天 ' + Math.floor((mins%1440)/60) + ' 小时');
+      elx.textContent = ' · 距今约 ' + txt;
+    }
+    upd(); setInterval(upd, 60000);
   })();
 
   // ---- download this page as index.html (for GitHub upload) ----
